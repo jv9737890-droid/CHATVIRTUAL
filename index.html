@@ -9,7 +9,7 @@
         :root{--prim:#2563eb;--sec:#1e40af;--sucesso:#10b981;--perigo:#ef4444;--fundo:#f0f4f8;--claro:#fff;--cinza:#e5e7eb;--texto:#374151}
         body{background:var(--fundo);height:100vh;overflow:hidden}
         .tela{display:none;width:100%;height:100vh}
-        .ativa{display:flex}
+        .ativa{display:flex !important}
         .caixa{background:var(--claro);border-radius:16px;box-shadow:0 4px 12px rgba(0,0,0,.1);padding:2rem;max-width:420px;width:90%;margin:auto;text-align:center}
         input,button,select{width:100%;padding:.85rem 1rem;margin:.5rem 0;border-radius:10px;border:1px solid var(--cinza);font-size:1rem}
         button{background:var(--prim);color:white;border:none;cursor:pointer;font-weight:600;transition:.2s}
@@ -63,7 +63,7 @@
         <p id="mascaraNumero" style="color:#6b7280;margin:.5rem 0;"></p>
         <p id="analiseIA" style="color:var(--prim);display:none;">🧠 A.I Chat analisando...</p>
         <p id="resultadoIA"></p>
-        <button onclick="validarECadastrar()">Criar Conta</button>
+        <button type="button" onclick="validarECadastrar()">Criar Conta</button>
         <p style="margin-top:1rem;">Já tem conta? <a href="#" onclick="mostrarTela('telaLogin');return false;">Entrar</a></p>
     </div>
 </div>
@@ -74,7 +74,7 @@
         <h2>🔐 Entrar</h2>
         <input type="text" id="loginNumero" placeholder="Número de telefone">
         <input type="password" id="loginChave" placeholder="Chave de Acesso">
-        <button onclick="entrar()">Entrar</button>
+        <button type="button" onclick="entrar()">Entrar</button>
         <p style="margin-top:1rem;">Não tem conta? <a href="#" onclick="mostrarTela('telaCadastro');return false;">Criar conta</a></p>
     </div>
 </div>
@@ -87,7 +87,7 @@
         <input type="text" id="nomeExibicao" placeholder="Nome de exibição">
         <input type="password" id="chaveAcesso" placeholder="Criar Chave de Acesso">
         <input type="password" id="chaveConfirma" placeholder="Repetir chave">
-        <button onclick="salvarPerfil()">Salvar e Entrar</button>
+        <button type="button" onclick="salvarPerfil()">Salvar e Entrar</button>
     </div>
 </div>
 
@@ -96,17 +96,17 @@
     <div class="barra-superior">
         <h3>Conversas</h3>
         <div>
-            <button style="width:auto;padding:.5rem;border:1px solid white;background:transparent;margin:0 .25rem" onclick="abrirConfig()">⚙️</button>
-            <button style="width:auto;padding:.5rem;border:1px solid white;background:transparent;margin:0 .25rem" onclick="abrirPremium()">💎</button>
-            <button style="width:auto;padding:.5rem;border:1px solid white;background:transparent;margin:0 .25rem" onclick="sair()">🚪</button>
+            <button type="button" style="width:auto;padding:.5rem;border:1px solid white;background:transparent;margin:0 .25rem" onclick="abrirConfig()">⚙️</button>
+            <button type="button" style="width:auto;padding:.5rem;border:1px solid white;background:transparent;margin:0 .25rem" onclick="abrirPremium()">💎</button>
+            <button type="button" style="width:auto;padding:.5rem;border:1px solid white;background:transparent;margin:0 .25rem" onclick="sair()">🚪</button>
         </div>
     </div>
     <div class="conteudo">
         <div class="lado-esq">
             <div style="padding:1rem">
                 <input type="text" id="buscar" placeholder="Buscar..." oninput="filtrarContatos()">
-                <button style="margin-top:.5rem" onclick="abrirAdicionar()">➕ Adicionar</button>
-                <button onclick="abrirGrupo()" style="background:var(--sucesso)">👥 Criar Grupo</button>
+                <button type="button" style="margin-top:.5rem" onclick="abrirAdicionar()">➕ Adicionar</button>
+                <button type="button" onclick="abrirGrupo()" style="background:var(--sucesso)">👥 Criar Grupo</button>
             </div>
             <div id="listaContatos"></div>
         </div>
@@ -116,15 +116,15 @@
                 <div style="padding:.75rem;border-bottom:1px solid var(--cinza);display:flex;justify-content:space-between;align-items:center">
                     <span id="nomeConversaAtiva"></span>
                     <div>
-                        <button style="width:auto;padding:.3rem .7rem;margin:0 .1rem" onclick="iniciarLigacao('voz')">📞</button>
-                        <button style="width:auto;padding:.3rem .7rem;margin:0 .1rem" onclick="iniciarLigacao('video')">📹</button>
+                        <button type="button" style="width:auto;padding:.3rem .7rem;margin:0 .1rem" onclick="iniciarLigacao('voz')">📞</button>
+                        <button type="button" style="width:auto;padding:.3rem .7rem;margin:0 .1rem" onclick="iniciarLigacao('video')">📹</button>
                     </div>
                 </div>
                 <div class="area-msgs" id="caixaMensagens"></div>
                 <div class="caixa-envio">
                     <input type="text" id="textoMensagem" placeholder="Digite..." onkeypress="if(event.key==='Enter'){enviarTexto();return false;}">
-                    <button onclick="enviarTexto()" style="width:auto;padding:.75rem">➤</button>
-                    <button class="btn-grava" id="btnGravar" 
+                    <button type="button" onclick="enviarTexto()" style="width:auto;padding:.75rem">➤</button>
+                    <button type="button" class="btn-grava" id="btnGravar" 
                         onmousedown="iniciarGravacao()" ontouchstart="iniciarGravacao()"
                         onmouseup="finalizarGravacao()" ontouchend="finalizarGravacao()">🎙️</button>
                 </div>
@@ -136,33 +136,33 @@
 <!-- Configurações -->
 <div class="tela" id="telaConfig">
     <div class="barra-superior">
-        <button style="background:transparent;border:none;color:white" onclick="voltar()">← Voltar</button>
+        <button type="button" style="background:transparent;border:none;color:white" onclick="voltar()">← Voltar</button>
         <h3>Configurações</h3>
         <span></span>
     </div>
     <div style="padding:1rem;max-width:500px;margin:0 auto">
         <div style="text-align:center;margin-bottom:2rem">
             <div class="foto-perfil" id="exibirFoto">👤</div>
-            <button onclick="document.getElementById('entradaFoto').click()" style="width:auto">Alterar Foto</button>
+            <button type="button" onclick="document.getElementById('entradaFoto').click()" style="width:auto">Alterar Foto</button>
             <input type="file" id="entradaFoto" accept="image/*" style="display:none" onchange="salvarFoto(event)">
         </div>
         <label>Nome de Exibição:</label>
         <input type="text" id="cfgNome">
-        <button onclick="salvarNome()" style="width:auto">Salvar Nome</button>
+        <button type="button" onclick="salvarNome()" style="width:auto">Salvar Nome</button>
         <label>Número:</label>
         <input type="text" id="cfgNumero" disabled style="background:#eee;">
         <p style="color:#6b7280;font-size:.85rem;">⚠️ Não pode ser alterado</p>
         <label>Nova Chave de Acesso:</label>
         <input type="password" id="chaveNova" placeholder="Nova chave">
         <input type="password" id="chaveNovaConfirma" placeholder="Repetir">
-        <button onclick="trocarChave()" style="width:auto">Atualizar Chave</button>
+        <button type="button" onclick="trocarChave()" style="width:auto">Atualizar Chave</button>
     </div>
 </div>
 
 <!-- Premium -->
 <div class="tela" id="telaPremium">
     <div class="barra-superior">
-        <button style="background:transparent;border:none;color:white" onclick="voltar()">← Voltar</button>
+        <button type="button" style="background:transparent;border:none;color:white" onclick="voltar()">← Voltar</button>
         <h3>💎 Premium</h3>
         <span></span>
     </div>
@@ -180,8 +180,8 @@
             </ul>
         </div>
         <div id="statusPremium"></div>
-        <button class="btn-sucesso" id="btnTeste" onclick="ativarTeste()">🎁 Teste 7 Dias Grátis</button>
-        <button id="btnAssinar" style="margin-top:1rem;display:none" onclick="assinarPremium()">💳 Assinar R$29,90/mês</button>
+        <button type="button" class="btn-sucesso" id="btnTeste" onclick="ativarTeste()">🎁 Teste 7 Dias Grátis</button>
+        <button type="button" id="btnAssinar" style="margin-top:1rem;display:none" onclick="assinarPremium()">💳 Assinar R$29,90/mês</button>
     </div>
 </div>
 
@@ -192,11 +192,11 @@
     <video id="videoLocal" autoplay muted playsinline style="width:200px;border-radius:12px;background:black"></video>
     <video id="videoRemoto" autoplay playsinline style="width:300px;border-radius:12px;background:black;margin-top:1rem"></video>
     <div class="acoes-ligacao">
-        <button class="btn-perigo" onclick="encerrarLigacao()">📞</button>
-        <button id="btnMic" onclick="alternarMicrofone()">🎤</button>
-        <button id="btnCam" onclick="alternarCamera()">📷</button>
-        <button onclick="compartilharTela()">🖥️</button>
-        <button onclick="alternarAltofalante()">🔊</button>
+        <button type="button" class="btn-perigo" onclick="encerrarLigacao()">📞</button>
+        <button type="button" id="btnMic" onclick="alternarMicrofone()">🎤</button>
+        <button type="button" id="btnCam" onclick="alternarCamera()">📷</button>
+        <button type="button" onclick="compartilharTela()">🖥️</button>
+        <button type="button" onclick="alternarAltofalante()">🔊</button>
     </div>
 </div>
 
@@ -205,9 +205,9 @@
     <div style="background:white;padding:2rem;border-radius:16px;max-width:400px;width:90%">
         <h3>Adicionar Contato</h3>
         <input type="text" id="buscarContato" placeholder="Nome ou Número">
-        <button onclick="procurarUsuario()">Buscar</button>
+        <button type="button" onclick="procurarUsuario()">Buscar</button>
         <div id="resultadoBusca" style="margin-top:1rem"></div>
-        <button style="background:#6b7280" onclick="fecharModal()">Cancelar</button>
+        <button type="button" style="background:#6b7280" onclick="fecharModal()">Cancelar</button>
     </div>
 </div>
 
@@ -217,8 +217,8 @@
         <h3>Criar Grupo</h3>
         <input type="text" id="nomeGrupo" placeholder="Nome do Grupo">
         <div id="listaParaGrupo" style="max-height:200px;overflow-y:auto;border:1px solid #eee;padding:.5rem;margin:1rem 0;"></div>
-        <button onclick="criarGrupo()">Criar</button>
-        <button style="background:#6b7280" onclick="fecharModal()">Cancelar</button>
+        <button type="button" onclick="criarGrupo()">Criar</button>
+        <button type="button" style="background:#6b7280" onclick="fecharModal()">Cancelar</button>
     </div>
 </div>
 
@@ -242,18 +242,13 @@ function carregarDados(){
     const p=localStorage.getItem('aiChat_premium'); 
     if(p){const d=JSON.parse(p);ehPremium=d.premium;expiraTeste=d.expira;}
 }
-function mostrarTela(id){document.querySelectorAll('.tela').forEach(t=>t.classList.remove('ativa'));document.getElementById(id).classList.add('ativa');}
+function mostrarTela(id){
+    document.querySelectorAll('.tela').forEach(t=>t.classList.remove('ativa'));
+    document.getElementById(id).classList.add('ativa');
+}
 function voltar(){mostrarTela('telaPrincipal');carregarTelaPrincipal();}
 function fecharModal(){document.getElementById('modalAdicionar').style.display='none';document.getElementById('modalGrupo').style.display='none';}
 
 function atualizarMascara(){
     const pais=document.getElementById('pais').value;
-    const ddd=document.getElementById('ddd').value||'34';
-    const num=document.getElementById('numeroBase').value;
-    document.getElementById('mascaraNumero').textContent=`Seu número: ${pais} ${ddd} ${num||'...'}`;
-}
-
-function numeroExiste(numero){
-    const todos=[];
-    const u=localStorage.getItem('aiChat_usuario'); if(u&&JSON.parse(u).numero===numero)return true;
-    for(let i=0;i<localStorage.length;i++){
+    const d
