@@ -3,252 +3,513 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A.I Chat — Seu Mensageiro Exclusivo</title>
+    <title>Rede Social Super Avançada</title>
     <style>
-        *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif}
-        :root{--prim:#2563eb;--sec:#1e40af;--sucesso:#10b981;--perigo:#ef4444;--fundo:#f0f4f8;--claro:#fff;--cinza:#e5e7eb;--texto:#374151}
-        body{background:var(--fundo);height:100vh;overflow:hidden}
-        .tela{display:none;width:100%;height:100vh}
-        .ativa{display:flex !important}
-        .caixa{background:var(--claro);border-radius:16px;box-shadow:0 4px 12px rgba(0,0,0,.1);padding:2rem;max-width:420px;width:90%;margin:auto;text-align:center}
-        input,button,select{width:100%;padding:.85rem 1rem;margin:.5rem 0;border-radius:10px;border:1px solid var(--cinza);font-size:1rem}
-        button{background:var(--prim);color:white;border:none;cursor:pointer;font-weight:600;transition:.2s}
-        button:hover{background:var(--sec)}
-        .btn-perigo{background:var(--perigo)}
-        .btn-sucesso{background:var(--sucesso)}
-        .barra-superior{background:var(--prim);color:white;padding:1rem;display:flex;align-items:center;justify-content:space-between}
-        .conteudo{display:flex;height:calc(100vh - 60px)}
-        .lado-esq{width:300px;background:white;border-right:1px solid var(--cinza);overflow-y:auto}
-        .lado-dir{flex:1;display:flex;flex-direction:column;background:#f9fafb}
-        .item-contato{padding:1rem;border-bottom:1px solid var(--cinza);cursor:pointer}
-        .item-contato:hover{background:var(--fundo)}
-        .area-msgs{flex:1;padding:1rem;overflow-y:auto;background:#eff6ff}
-        .msg{max-width:70%;margin:.5rem 0;padding:.75rem 1rem;border-radius:18px;position:relative}
-        .enviada{background:var(--prim);color:white;margin-left:auto;border-bottom-right-radius:4px}
-        .recebida{background:white;color:var(--texto);margin-right:auto;border-bottom-left-radius:4px}
-        .apagada{background:#e5e7eb;color:#6b7280;font-style:italic}
-        .caixa-envio{display:flex;padding:1rem;background:white;border-top:1px solid var(--cinza)}
-        .caixa-envio input{flex:1;margin:0;margin-right:.5rem}
-        .btn-grava{width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem}
-        .btn-grava.gravando{background:var(--perigo);animation:pulsar 1s infinite}
-        @keyframes pulsar{0%{transform:scale(1)}50%{transform:scale(1.1)}100%{transform:scale(1)}}
-        .barra-ligacao{position:fixed;inset:0;background:rgba(0,0,0,.9);color:white;display:none;flex-direction:column;align-items:center;justify-content:center;z-index:1000}
-        .acoes-ligacao{position:absolute;bottom:2rem;display:flex;gap:1rem}
-        .acoes-ligacao button{width:60px;height:60px;border-radius:50%}
-        .premium{background:linear-gradient(135deg,#f59e0b,#d97706);color:white;border-radius:12px;padding:1rem;margin:1rem 0}
-        .foto-perfil{width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;background:var(--cinza);font-size:2rem}
-        .oculto{display:none !important}
-        a{color:var(--prim);text-decoration:none}
-        .item-busca{padding:.75rem;border-bottom:1px solid #eee;cursor:pointer}
-        .item-busca:hover{background:#f3f4f6}
+        :root {
+            --primary: #075e54;
+            --secondary: #128c7e;
+            --bg: #e5ddd5;
+            --chat-in: #ffffff;
+            --chat-out: #dcf8c6;
+            --dark: #0b141a;
+            --light: #f0f2f5;
+        }
+
+        * { margin: 0; padding: 0; box-box: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: #111b21; color: #e9edef; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
+        
+        .screen { display: none; width: 100%; height: 100%; max-width: 450px; background: var(--dark); flex-direction: column; position: relative; border: 1px solid #222; }
+        .active { display: flex; }
+
+        /* Telas de Autenticação */
+        .auth-container { padding: 30px; display: flex; flex-direction: column; justify-content: center; height: 100%; gap: 20px; text-align: center; }
+        input, select, button { padding: 12px; border-radius: 8px; border: 1px solid #333; background: #2a3942; color: #fff; font-size: 16px; outline: none; }
+        button { background: var(--secondary); font-weight: bold; cursor: pointer; border: none; transition: 0.2s; }
+        button:hover { background: #20b09e; }
+        
+        /* App Principal */
+        .app-header { background: #202c33; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #374248; }
+        .tabs { display: flex; background: #202c33; justify-content: space-around; padding: 10px 0; border-bottom: 1px solid #374248; }
+        .tab { cursor: pointer; padding: 5px 20px; color: #8696a0; font-weight: bold; }
+        .tab.active-tab { color: var(--secondary); border-bottom: 3px solid var(--secondary); }
+
+        .list-container { flex: 1; overflow-y: auto; padding: 10px; }
+        .item-row { display: flex; align-items: center; padding: 12px; border-bottom: 1px solid #222e35; cursor: pointer; transition: 0.2s; }
+        .item-row:hover { background: #202c33; }
+        .item-img { width: 45px; height: 45px; border-radius: 50%; background: #687781; margin-right: 15px; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        .item-info { flex: 1; }
+        .item-name { font-weight: bold; margin-bottom: 3px; }
+        .item-sub { font-size: 13px; color: #8696a0; }
+
+        /* Chat */
+        .chat-messages { flex: 1; overflow-y: auto; padding: 20px; background: url('https://githubusercontent.com'); background-color: #0b141a; display: flex; flex-direction: column; gap: 8px; }
+        .msg { max-width: 75%; padding: 8px 12px; border-radius: 8px; font-size: 15px; color: #000; position: relative; display: flex; flex-direction: column; }
+        .msg.out { background: #005c4b; color: #e9edef; align-self: flex-end; }
+        .msg.in { background: #202c33; color: #e9edef; align-self: flex-start; }
+        .msg .deleted { font-style: italic; color: #8696a0; }
+        .msg .delete-btn { position: absolute; right: 2px; top: 2px; font-size: 10px; cursor: pointer; background: rgba(0,0,0,0.2); padding: 2px 4px; border-radius: 4px; color: #fff; display:none;}
+        .msg:hover .delete-btn { display: block; }
+        .audio-player { display: flex; align-items: center; gap: 5px; margin-top: 5px; }
+
+        .chat-input-area { background: #202c33; padding: 10px; display: flex; align-items: center; gap: 10px; }
+        .chat-input-area input { flex: 1; }
+        .audio-btn { width: 45px; height: 45px; border-radius: 50%; background: var(--secondary); display: flex; align-items: center; justify-content: center; cursor: pointer; user-select: none; }
+        .audio-btn.recording { background: #ea0038; animation: pulse 1s infinite; }
+
+        /* Chamada */
+        .call-screen { background: #111b21; position: absolute; top:0; left:0; width:100%; height:100%; z-index: 100; display:none; flex-direction: column; justify-content: space-between; padding: 40px 20px; }
+        .video-container { flex: 1; display: flex; flex-direction: column; gap: 10px; position: relative; margin: 20px 0; }
+        video { width: 100%; height: 45%; background: #222; border-radius: 12px; object-fit: cover; }
+        .call-actions { display: flex; justify-content: center; gap: 20px; }
+        .call-btn { width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 20px; border: none; }
+        .btn-hangup { background: #ea0038; color: white; }
+        .btn-action { background: #2a3942; color: white; }
+
+        /* Flutuantes e Avisos */
+        .floating-btn { position: absolute; bottom: 20px; right: 20px; width: 55px; height: 55px; border-radius: 50%; background: var(--secondary); display: flex; align-items: center; justify-content: center; font-size: 24px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .ai-banner { background: #00453a; color: #00e676; padding: 10px; font-size: 13px; text-align: center; display: none; border-radius: 8px; }
+        .premium-badge { background: linear-gradient(45deg, #ffd700, #ffa500); color: #000; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: bold; margin-left: 5px; }
+
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
     </style>
 </head>
 <body>
 
-<!-- Tela Cadastro -->
-<div class="tela ativa" id="telaCadastro">
-    <div class="caixa">
-        <h1>✨ A.I Chat</h1>
-        <p style="color:#6b7280;margin-bottom:2rem;">Comunicação exclusiva, segura e permanente</p>
-        <label>País:</label>
-        <select id="pais" onchange="atualizarMascara()">
-            <option value="+55" selected>Brasil (+55)</option>
-            <option value="+1">EUA/Canadá (+1)</option>
-            <option value="+351">Portugal (+351)</option>
-        </select>
-        <label>Região (2 dígitos):</label>
-        <input type="text" id="ddd" maxlength="2" placeholder="34" oninput="this.value=this.value.replace(/\D/g,'');atualizarMascara()">
-        <label>Número (até 10 dígitos):</label>
-        <input type="text" id="numeroBase" maxlength="10" placeholder="9999999999" oninput="this.value=this.value.replace(/\D/g,'');atualizarMascara()">
-        <p id="mascaraNumero" style="color:#6b7280;margin:.5rem 0;"></p>
-        <p id="analiseIA" style="color:var(--prim);display:none;">🧠 A.I Chat analisando...</p>
-        <p id="resultadoIA"></p>
-        <button type="button" onclick="validarECadastrar()">Criar Conta</button>
-        <p style="margin-top:1rem;">Já tem conta? <a href="#" onclick="mostrarTela('telaLogin');return false;">Entrar</a></p>
-    </div>
-</div>
-
-<!-- Tela Login -->
-<div class="tela" id="telaLogin">
-    <div class="caixa">
-        <h2>🔐 Entrar</h2>
-        <input type="text" id="loginNumero" placeholder="Número de telefone">
-        <input type="password" id="loginChave" placeholder="Chave de Acesso">
-        <button type="button" onclick="entrar()">Entrar</button>
-        <p style="margin-top:1rem;">Não tem conta? <a href="#" onclick="mostrarTela('telaCadastro');return false;">Criar conta</a></p>
-    </div>
-</div>
-
-<!-- Tela Perfil -->
-<div class="tela" id="telaPerfil">
-    <div class="caixa">
-        <h2>👤 Complete seu Perfil</h2>
-        <p id="seuNumeroExibido" style="color:var(--prim);font-weight:bold;margin:1rem 0;"></p>
-        <input type="text" id="nomeExibicao" placeholder="Nome de exibição">
-        <input type="password" id="chaveAcesso" placeholder="Criar Chave de Acesso">
-        <input type="password" id="chaveConfirma" placeholder="Repetir chave">
-        <button type="button" onclick="salvarPerfil()">Salvar e Entrar</button>
-    </div>
-</div>
-
-<!-- Tela Principal -->
-<div class="tela" id="telaPrincipal">
-    <div class="barra-superior">
-        <h3>Conversas</h3>
-        <div>
-            <button type="button" style="width:auto;padding:.5rem;border:1px solid white;background:transparent;margin:0 .25rem" onclick="abrirConfig()">⚙️</button>
-            <button type="button" style="width:auto;padding:.5rem;border:1px solid white;background:transparent;margin:0 .25rem" onclick="abrirPremium()">💎</button>
-            <button type="button" style="width:auto;padding:.5rem;border:1px solid white;background:transparent;margin:0 .25rem" onclick="sair()">🚪</button>
+    <!-- 1. TELA DE LOGIN / CHAVE DE ACESSO -->
+    <div id="screen-login" class="screen active">
+        <div class="auth-container">
+            <h2>🔑 Chave de Acesso</h2>
+            <p>Se você já possui uma conta, insira sua chave secreta abaixo.</p>
+            <input type="password" id="login-key" placeholder="Digite sua Chave de Acesso">
+            <button onclick="actions.login()">Entrar no App</button>
+            <hr style="border-color: #222;">
+            <p style="font-size: 14px; color: #8696a0;">Novo por aqui?</p>
+            <button style="background: #2a3942;" onclick="utils.switchScreen('screen-register')">Criar Nova Conta</button>
         </div>
     </div>
-    <div class="conteudo">
-        <div class="lado-esq">
-            <div style="padding:1rem">
-                <input type="text" id="buscar" placeholder="Buscar..." oninput="filtrarContatos()">
-                <button type="button" style="margin-top:.5rem" onclick="abrirAdicionar()">➕ Adicionar</button>
-                <button type="button" onclick="abrirGrupo()" style="background:var(--sucesso)">👥 Criar Grupo</button>
+
+    <!-- 2. TELA DE REGISTRO (PASSO 1: TELEFONE) -->
+    <div id="screen-register" class="screen">
+        <div class="auth-container">
+            <h2>📱 Cadastro (Passo 1/2)</h2>
+            <p>Defina seu país e digite até 10 algarismos. O sistema gerará o DDI e o prefixo [34] automaticamente.</p>
+            <select id="reg-country">
+                <option value="+55">Brasil (+55)</option>
+                <option value="+1">EUA (+1)</option>
+                <option value="+351">Portugal (+351)</option>
+                <option value="+34">Espanha (+34)</option>
+            </select>
+            <input type="number" id="reg-phone" placeholder="Ex: 99991234">
+            <div id="ai-status" class="ai-banner"></div>
+            <button onclick="actions.validatePhoneWithAI()">Analisar Número com A.I Chat</button>
+        </div>
+    </div>
+
+    <!-- 3. TELA DE REGISTRO (PASSO 2: PERFIL & CHAVE) -->
+    <div id="screen-profile-setup" class="screen">
+        <div class="auth-container">
+            <h2>👤 Configurar Perfil (Passo 2/2)</h2>
+            <p id="confirmed-phone" style="color: var(--secondary); font-weight: bold;"></p>
+            <input type="text" id="reg-name" placeholder="Seu Nome de Exibição">
+            <input type="password" id="reg-key" placeholder="Crie uma Chave de Acesso">
+            <button onclick="actions.completeRegistration()">Finalizar Cadastro Permanente</button>
+        </div>
+    </div>
+
+    <!-- 4. APP PRINCIPAL (CONVERSAS / GRUPOS / CONFIGURAÇÕES) -->
+    <div id="screen-main" class="screen">
+        <div class="app-header">
+            <h3 id="app-user-title">App</h3>
+            <span id="user-premium-status"></span>
+        </div>
+        <div class="tabs">
+            <div class="tab active-tab" onclick="actions.switchTab('chats')">Conversas</div>
+            <div class="tab" onclick="actions.switchTab('groups')">Comunidades/Grupos</div>
+            <div class="tab" onclick="actions.switchTab('settings')">Configurações</div>
+        </div>
+
+        <!-- Conteúdo de Abas -->
+        <div id="tab-chats" class="list-container">
+            <!-- Renderizado via JS -->
+        </div>
+
+        <div id="tab-groups" class="list-container" style="display:none;">
+            <!-- Renderizado via JS -->
+        </div>
+
+        <div id="tab-settings" class="list-container" style="display:none; padding: 20px; display:flex; flex-direction:column; gap:15px;">
+            <h4>⚙️ Configurações Estilo WhatsApp</h4>
+            <div>
+                <label style="font-size:12px; color:#8696a0;">Nome de Exibição:</label>
+                <input type="text" id="settings-name" style="width:100%; margin-top:5px;">
             </div>
-            <div id="listaContatos"></div>
-        </div>
-        <div class="lado-dir">
-            <div id="seletorConversa" style="padding:3rem;text-align:center;color:#6b7280;">← Selecione uma conversa</div>
-            <div id="conversaAtiva" class="oculto">
-                <div style="padding:.75rem;border-bottom:1px solid var(--cinza);display:flex;justify-content:space-between;align-items:center">
-                    <span id="nomeConversaAtiva"></span>
-                    <div>
-                        <button type="button" style="width:auto;padding:.3rem .7rem;margin:0 .1rem" onclick="iniciarLigacao('voz')">📞</button>
-                        <button type="button" style="width:auto;padding:.3rem .7rem;margin:0 .1rem" onclick="iniciarLigacao('video')">📹</button>
-                    </div>
-                </div>
-                <div class="area-msgs" id="caixaMensagens"></div>
-                <div class="caixa-envio">
-                    <input type="text" id="textoMensagem" placeholder="Digite..." onkeypress="if(event.key==='Enter'){enviarTexto();return false;}">
-                    <button type="button" onclick="enviarTexto()" style="width:auto;padding:.75rem">➤</button>
-                    <button type="button" class="btn-grava" id="btnGravar" 
-                        onmousedown="iniciarGravacao()" ontouchstart="iniciarGravacao()"
-                        onmouseup="finalizarGravacao()" ontouchend="finalizarGravacao()">🎙️</button>
-                </div>
+            <div>
+                <label style="font-size:12px; color:#8696a0;">URL da Foto de Perfil:</label>
+                <input type="text" id="settings-pic" placeholder="https://..." style="width:100%; margin-top:5px;">
             </div>
-        </div>
-    </div>
-</div>
+            <div>
+                <label style="font-size:12px; color:#8696a0;">Seu Número (Exclusivo - Não Editável):</label>
+                <input type="text" id="settings-phone" disabled style="width:100%; margin-top:5px; opacity:0.6;">
+            </div>
+            <button onclick="actions.saveSettings()">Salvar Alterações</button>
+            <hr style="border-color:#222;">
+            <h4>⭐ Recursos Premium</h4>
+            <div id="premium-box" style="background:#202c33; padding:15px; border-radius:8px; text-align:center;">
+                <p id="premium-desc">Experimente o Premium por 7 dias grátis!</p>
+Sair da Conta
++
+←
 
-<!-- Configurações -->
-<div class="tela" id="telaConfig">
-    <div class="barra-superior">
-        <button type="button" style="background:transparent;border:none;color:white" onclick="voltar()">← Voltar</button>
-        <h3>Configurações</h3>
-        <span></span>
-    </div>
-    <div style="padding:1rem;max-width:500px;margin:0 auto">
-        <div style="text-align:center;margin-bottom:2rem">
-            <div class="foto-perfil" id="exibirFoto">👤</div>
-            <button type="button" onclick="document.getElementById('entradaFoto').click()" style="width:auto">Alterar Foto</button>
-            <input type="file" id="entradaFoto" accept="image/*" style="display:none" onchange="salvarFoto(event)">
-        </div>
-        <label>Nome de Exibição:</label>
-        <input type="text" id="cfgNome">
-        <button type="button" onclick="salvarNome()" style="width:auto">Salvar Nome</button>
-        <label>Número:</label>
-        <input type="text" id="cfgNumero" disabled style="background:#eee;">
-        <p style="color:#6b7280;font-size:.85rem;">⚠️ Não pode ser alterado</p>
-        <label>Nova Chave de Acesso:</label>
-        <input type="password" id="chaveNova" placeholder="Nova chave">
-        <input type="password" id="chaveNovaConfirma" placeholder="Repetir">
-        <button type="button" onclick="trocarChave()" style="width:auto">Atualizar Chave</button>
-    </div>
-</div>
+Nome
+Ao Vivo
 
-<!-- Premium -->
-<div class="tela" id="telaPremium">
-    <div class="barra-superior">
-        <button type="button" style="background:transparent;border:none;color:white" onclick="voltar()">← Voltar</button>
-        <h3>💎 Premium</h3>
-        <span></span>
-    </div>
-    <div class="caixa" style="max-width:500px">
-        <h2>A.I Chat Premium</h2>
-        <p style="margin:1rem 0">Recursos exclusivos</p>
-        <div class="premium">
-            <ul style="margin:1rem 0 1rem 2rem;text-align:left">
-                <li>🔒 Criptografia avançada</li>
-                <li>🎨 Temas exclusivos</li>
-                <li>📁 Arquivos sem limite</li>
-                <li>🎙️ Áudios sem duração limite</li>
-                <li>📊 Estatísticas</li>
-                <li>🌟 Selo Premium</li>
-            </ul>
-        </div>
-        <div id="statusPremium"></div>
-        <button type="button" class="btn-sucesso" id="btnTeste" onclick="ativarTeste()">🎁 Teste 7 Dias Grátis</button>
-        <button type="button" id="btnAssinar" style="margin-top:1rem;display:none" onclick="assinarPremium()">💳 Assinar R$29,90/mês</button>
-    </div>
-</div>
 
-<!-- Ligação -->
-<div class="barra-ligacao" id="telaLigacao">
-    <h2 id="tituloLigacao">📞 Ligando...</h2>
-    <p id="statusLigacao" style="margin:1rem 0">Aguardando...</p>
-    <video id="videoLocal" autoplay muted playsinline style="width:200px;border-radius:12px;background:black"></video>
-    <video id="videoRemoto" autoplay playsinline style="width:300px;border-radius:12px;background:black;margin-top:1rem"></video>
-    <div class="acoes-ligacao">
-        <button type="button" class="btn-perigo" onclick="encerrarLigacao()">📞</button>
-        <button type="button" id="btnMic" onclick="alternarMicrofone()">🎤</button>
-        <button type="button" id="btnCam" onclick="alternarCamera()">📷</button>
-        <button type="button" onclick="compartilharTela()">🖥️</button>
-        <button type="button" onclick="alternarAltofalante()">🔊</button>
-    </div>
-</div>
+📞
+📹
 
-<!-- Modal Adicionar -->
-<div id="modalAdicionar" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);align-items:center;justify-content:center;z-index:500">
-    <div style="background:white;padding:2rem;border-radius:16px;max-width:400px;width:90%">
-        <h3>Adicionar Contato</h3>
-        <input type="text" id="buscarContato" placeholder="Nome ou Número">
-        <button type="button" onclick="procurarUsuario()">Buscar</button>
-        <div id="resultadoBusca" style="margin-top:1rem"></div>
-        <button type="button" style="background:#6b7280" onclick="fecharModal()">Cancelar</button>
-    </div>
-</div>
+Sinal
+🎤
 
-<!-- Modal Grupo -->
-<div id="modalGrupo" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);align-items:center;justify-content:center;z-index:500">
-    <div style="background:white;padding:2rem;border-radius:16px;max-width:400px;width:90%">
-        <h3>Criar Grupo</h3>
-        <input type="text" id="nomeGrupo" placeholder="Nome do Grupo">
-        <div id="listaParaGrupo" style="max-height:200px;overflow-y:auto;border:1px solid #eee;padding:.5rem;margin:1rem 0;"></div>
-        <button type="button" onclick="criarGrupo()">Criar</button>
-        <button type="button" style="background:#6b7280" onclick="fecharModal()">Cancelar</button>
-    </div>
-</div>
+Usuário
+Conectando Chamada Segura (Estilo WhatsApp)...
 
-<script>
-let usuarioAtual=null, contatos=[], conversas={}, grupos=[], conversaAtiva=null;
-let gravacaoAtiva=false, mediaRecorder=null, chunks=[], streamLocal=null;
-let ehPremium=false, expiraTeste=null, micAtivo=true, camAtiva=true;
+🖥️
+🎙️
+📷
+❌
 
-function salvarDados(){
-    localStorage.setItem('aiChat_usuario', JSON.stringify(usuarioAtual));
-    localStorage.setItem('aiChat_contatos', JSON.stringify(contatos));
-    localStorage.setItem('aiChat_conversas', JSON.stringify(conversas));
-    localStorage.setItem('aiChat_grupos', JSON.stringify(grupos));
-    localStorage.setItem('aiChat_premium', JSON.stringify({premium:ehPremium,expira:expiraTeste}));
+// Banco de Dados fictício local permanente
+const db = {
+getUsers: () => JSON.parse(localStorage.getItem('app_users')) || [],
+saveUsers: (users) => localStorage.setItem('app_users', JSON.stringify(users)),
+getMessages: () => JSON.parse(localStorage.getItem('app_chats')) || [],
+saveMessages: (chats) => localStorage.setItem('app_chats', JSON.stringify(chats)),
+getGroups: () => JSON.parse(localStorage.getItem('app_groups')) || [],
+saveGroups: (groups) => localStorage.setItem('app_groups', JSON.stringify(groups))
+};
+// Estado da Sessão Atual
+let state = {
+currentUser: null,
+activeChatTarget: null, // Pode ser ID de usuário ou de grupo
+isGroupChat: false,
+mediaRecorder: null,
+audioChunks: [],
+localStream: null,
+screenStream: null
+};
+const utils = {
+switchScreen: (id) => {
+document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+document.getElementById(id).classList.add('active');
+},
+randomRange: (min, max) => Math.floor(Math.random() * (max - min + 1)) + min
+};
+const actions = {
+// Inteligência Artificial validando número exclusivo
+validatePhoneWithAI: () => {
+const country = document.getElementById('reg-country').value;
+const inputNum = document.getElementById('reg-phone').value;
+const aiStatus = document.getElementById('ai-status');
+if(!inputNum || inputNum.length > 10) {
+alert("O número precisa conter até 10 algarismos!");
+return;
 }
-function carregarDados(){
-    const u=localStorage.getItem('aiChat_usuario'); if(u)usuarioAtual=JSON.parse(u);
-    const c=localStorage.getItem('aiChat_contatos'); if(c)contatos=JSON.parse(c);
-    const cv=localStorage.getItem('aiChat_conversas'); if(cv)conversas=JSON.parse(cv);
-    const g=localStorage.getItem('aiChat_grupos'); if(g)grupos=JSON.parse(g);
-    const p=localStorage.getItem('aiChat_premium'); 
-    if(p){const d=JSON.parse(p);ehPremium=d.premium;expiraTeste=d.expira;}
+// Regra do escopo: + [País] + [Região Aleatória] + [34] + [Resto definido pelo usuário]
+const randomRegion = utils.randomRange(11, 99);
+const finalGeneratedPhone = ${country}(${randomRegion})34${inputNum};
+aiStatus.style.display = "block";
+aiStatus.innerText = "[A.I Chat]: Analisando banco de dados de todos os usuários...";
+setTimeout(() => {
+const allUsers = db.getUsers();
+const duplicate = allUsers.find(u => u.phone === finalGeneratedPhone);
+if(duplicate) {
+const alternativeNum = utils.randomRange(100000, 999999);
+const suggested = ${country}(${randomRegion})34${alternativeNum};
+aiStatus.style.background = "#5c0011";
+aiStatus.style.color = "#ff4d4f";
+aiStatus.innerText = [A.I Chat] REJEITADO! Esse número já existe. Sugestão da IA: ${suggested};
+} else {
+aiStatus.style.background = "#00453a";
+aiStatus.style.color = "#00e676";
+aiStatus.innerText = [A.I Chat] APROVADO! Número exclusivo detectado.;
+setTimeout(() => {
+document.getElementById('confirmed-phone').innerText = finalGeneratedPhone;
+utils.switchScreen('screen-profile-setup');
+}, 1200);
 }
-function mostrarTela(id){
-    document.querySelectorAll('.tela').forEach(t=>t.classList.remove('ativa'));
-    document.getElementById(id).classList.add('ativa');
+}, 1500);
+},
+completeRegistration: () => {
+const name = document.getElementById('reg-name').value;
+const key = document.getElementById('reg-key').value;
+const phone = document.getElementById('confirmed-phone').innerText;
+if(!name || !key) return alert("Preencha todos os campos!");
+const users = db.getUsers();
+const newUser = { id: Date.now(), name, phone, key, profilePic: '', premiumUntil: null };
+users.push(newUser);
+db.saveUsers(users);
+state.currentUser = newUser;
+alert(Conta criada com sucesso! Guarde sua chave de acesso para entrar: ${key});
+actions.loadMainDashboard();
+},
+login: () => {
+const key = document.getElementById('login-key').value;
+const users = db.getUsers();
+const user = users.find(u => u.key === key);
+if(user) {
+state.currentUser = user;
+actions.loadMainDashboard();
+} else {
+alert("Chave de acesso inválida ou não encontrada!");
 }
-function voltar(){mostrarTela('telaPrincipal');carregarTelaPrincipal();}
-function fecharModal(){document.getElementById('modalAdicionar').style.display='none';document.getElementById('modalGrupo').style.display='none';}
+},
+loadMainDashboard: () => {
+utils.switchScreen('screen-main');
+document.getElementById('app-user-title').innerText = state.currentUser.name;
+// Setar inputs de configurações
+document.getElementById('settings-name').value = state.currentUser.name;
+document.getElementById('settings-phone').value = state.currentUser.phone;
+document.getElementById('settings-pic').value = state.currentUser.profilePic || '';
+actions.renderChatsTab();
+actions.renderGroupsTab();
+actions.checkPremiumStatus();
+},
+switchTab: (tabName) => {
+document.querySelectorAll('.tab').forEach(t => t.classList.remove('active-tab'));
+event.target.classList.add('active-tab');
+document.getElementById('tab-chats').style.display = tabName === 'chats' ? 'block' : 'none';
+document.getElementById('tab-groups').style.display = tabName === 'groups' ? 'block' : 'none';
+document.getElementById('tab-settings').style.display = tabName === 'settings' ? 'flex' : 'none';
+document.getElementById('main-floating-btn').style.display = tabName === 'settings' ? 'none' : 'flex';
+},
+renderChatsTab: () => {
+const container = document.getElementById('tab-chats');
+const users = db.getUsers().filter(u => u.id !== state.currentUser.id);
+container.innerHTML = users.length ? '' : 'Nenhum contato encontrado.';
+users.forEach(u => {
+container.innerHTML +=  <div class="item-row" onclick="actions.openChat(${u.id}, false)"> <div class="item-img">${u.name[0].toUpperCase()}</div> <div class="item-info"> <div class="item-name">${u.name}</div> <div class="item-sub">${u.phone}</div> </div> </div>;
+});
+},
+renderGroupsTab: () => {
+const container = document.getElementById('tab-groups');
+const groups = db.getGroups();
+container.innerHTML = groups.length ? '' : 'Nenhum grupo ou comunidade ativa.';
+groups.forEach(g => {
+container.innerHTML +=  <div class="item-row" onclick="actions.openChat(${g.id}, true)"> <div class="item-img" style="background:#005c4b">👥</div> <div class="item-info"> <div class="item-name">${g.title}</div> <div class="item-sub">Comunidade Global</div> </div> </div>;
+});
+},
+openAddModal: () => {
+const option = prompt("Digite [1] para Adicionar Pessoa por Nome/Número ou [2] para Criar Grupo/Comunidade:");
+if(option === "1") {
+const search = prompt("Digite o nome ou número de telefone exato:");
+const user = db.getUsers().find(u => u.name === search || u.phone === search);
+if(user) alert(Contato encontrado: ${user.name} (${user.phone})! Já está disponível na aba de Conversas.);
+else alert("Nenhum usuário correspondente encontrado.");
+} else if(option === "2") {
+const title = prompt("Digite o nome da Nova Comunidade/Grupo:");
+if(title) {
+const groups = db.getGroups();
+groups.push({ id: Date.now(), title: title });
+db.saveGroups(groups);
+actions.renderGroupsTab();
+}
+}
+},
+openChat: (targetId, isGroup) => {
+state.activeChatTarget = targetId;
+state.isGroupChat = isGroup;
+utils.switchScreen('screen-chat');
+if(isGroup) {
+const g = db.getGroups().find(group => group.id === targetId);
+document.getElementById('chat-header-name').innerText = g.title;
+document.getElementById('chat-header-sub').innerText = "Comunidade";
+} else {
+const u = db.getUsers().find(user => user.id === targetId);
+document.getElementById('chat-header-name').innerText = u.name;
+document.getElementById('chat-header-sub').innerText = "Ao Vivo";
+}
+actions.renderMessages();
+},
+renderMessages: () => {
+const container = document.getElementById('chat-messages');
+container.innerHTML = '';
+const messages = db.getMessages();
+const filtered = messages.filter(m => {
+if (state.isGroupChat) return m.groupId === state.activeChatTarget;
+return (m.senderId === state.currentUser.id && m.receiverId === state.activeChatTarget) ||
+(m.senderId === state.activeChatTarget && m.receiverId === state.currentUser.id);
+});
+filtered.forEach(m => {
+const isMine = m.senderId === state.currentUser.id;
+let content = '';
+if (m.isDeleted) {
+content = <span class="deleted">[MENSAGEM DELETADA/APAGADA]</span>;
+} else if (m.type === 'audio') {
+content = `
 
-function atualizarMascara(){
-    const pais=document.getElementById('pais').value;
-    const d
+🎵 Áudio Gravado
+; } else { content = ${m.text}`;
+}
+const deleteBtn = (isMine && !m.isDeleted) ? <span class="delete-btn" onclick="actions.deleteMessage(${m.id})">Apagar</span> : '';
+container.innerHTML +=  <div class="msg ${isMine ? 'out' : 'in'}"> ${deleteBtn} <div style="font-size:11px; color:#8696a0; margin-bottom:2px;">${m.senderName}</div> ${content} </div>;
+});
+container.scrollTop = container.scrollHeight;
+},
+sendMessage: () => {
+const input = document.getElementById('chat-input');
+if(!input.value.trim()) return;
+const messages = db.getMessages();
+messages.push({
+id: Date.now(),
+senderId: state.currentUser.id,
+senderName: state.currentUser.name,
+receiverId: state.isGroupChat ? null : state.activeChatTarget,
+groupId: state.isGroupChat ? state.activeChatTarget : null,
+text: input.value,
+type: 'text',
+isDeleted: false
+});
+db.saveMessages(messages);
+input.value = '';
+actions.renderMessages();
+},
+deleteMessage: (msgId) => {
+let messages = db.getMessages();
+messages = messages.map(m => {
+if(m.id === msgId && m.senderId === state.currentUser.id) {
+m.isDeleted = true;
+}
+return m;
+});
+db.saveMessages(messages);
+actions.renderMessages();
+},
+// Funcionalidade de Áudio com Microfone (Pressionar e segurar)
+startAudioRecord: async () => {
+try {
+const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+state.mediaRecorder = new MediaRecorder(stream);
+state.audioChunks = [];
+state.mediaRecorder.ondataavailable = e => state.audioChunks.push(e.data);
+state.mediaRecorder.onstop = () => {
+const audioBlob = new Blob(state.audioChunks, { type: 'audio/ogg; codecs=opus' });
+const reader = new FileReader();
+reader.readAsDataURL(audioBlob);
+reader.onloadend = () => {
+const base64Audio = reader.result;
+const messages = db.getMessages();
+messages.push({
+id: Date.now(),
+senderId: state.currentUser.id,
+senderName: state.currentUser.name,
+receiverId: state.isGroupChat ? null : state.activeChatTarget,
+groupId: state.isGroupChat ? state.activeChatTarget : null,
+data: base64Audio,
+type: 'audio',
+isDeleted: false
+});
+db.saveMessages(messages);
+actions.renderMessages();
+};
+};
+state.mediaRecorder.start();
+document.getElementById('audio-record-btn').classList.add('recording');
+} catch (err) {
+alert("Permissão de microfone negada ou indisponível!");
+}
+},
+stopAudioRecord: () => {
+if(state.mediaRecorder && state.mediaRecorder.state !== "inactive") {
+state.mediaRecorder.stop();
+document.getElementById('audio-record-btn').classList.remove('recording');
+}
+},
+// Chamada de voz, vídeo e compartilhamento de tela via WebRTC estrutural simulado
+startCall: async (type) => {
+document.getElementById('call-screen').style.display = "flex";
+document.getElementById('call-user-name').innerText = document.getElementById('chat-header-name').innerText;
+try {
+state.localStream = await navigator.mediaDevices.getUserMedia({
+video: type === 'video',
+audio: true
+});
+document.getElementById('local-video').srcObject = state.localStream;
+// Mock da outra pessoa respondendo e transmitindo a chamada de volta
+document.getElementById('remote-video').srcObject = state.localStream;
+} catch (err) {
+document.getElementById('call-status').innerText = "Erro ao acessar dispositivos de mídia.";
+}
+},
+toggleScreenShare: async () => {
+try {
+if(!state.screenStream) {
+state.screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+document.getElementById('local-video').srcObject = state.screenStream;
+} else {
+state.screenStream.getTracks().forEach(track => track.stop());
+state.screenStream = null;
+document.getElementById('local-video').srcObject = state.localStream;
+}
+} catch (err) {
+console.log("Compartilhamento de tela cancelado.");
+}
+},
+endCall: () => {
+if(state.localStream) state.localStream.getTracks().forEach(t => t.stop());
+if(state.screenStream) state.screenStream.getTracks().forEach(t => t.stop());
+document.getElementById('call-screen').style.display = "none";
+},
+saveSettings: () => {
+const newName = document.getElementById('settings-name').value;
+const newPic = document.getElementById('settings-pic').value;
+let users = db.getUsers();
+users = users.map(u => {
+if(u.id === state.currentUser.id) {
+u.name = newName;
+u.profilePic = newPic;
+}
+return u;
+});
+db.saveUsers(users);
+state.currentUser.name = newName;
+state.currentUser.profilePic = newPic;
+alert("Configurações atualizadas!");
+actions.loadMainDashboard();
+},
+// Lógica de Premium Integrado e API Google fake de assinatura recorrente
+checkPremiumStatus: () => {
+const badge = document.getElementById('user-premium-status');
+const btn = document.getElementById('premium-btn');
+const desc = document.getElementById('premium-desc');
+if (state.currentUser.premiumUntil && new Date(state.currentUser.premiumUntil) > new Date()) {
+badge.innerHTML = <span class="premium-badge">PREMIUM COBRADO</span>;
+desc.innerText = "Sua conta possui recursos exclusivos liberados!";
+btn.style.display = "none";
+} else {
+badge.innerHTML = '';
+desc.innerText = "Experimente o Premium por 7 dias grátis! Após o período, cobrança mensal automática de R$ 89,90.";
+btn.style.display = "block";
+btn.innerText = "Resgatar 7 Dias Grátis";
+}
+},
+handlePremium: () => {
+// Testar grátis por 7 dias
+const date = new Date();
+date.setDate(date.getDate() + 7);
+let users = db.getUsers();
+users = users.map(u => {
+if(u.id === state.currentUser.id) {
+u.premiumUntil = date.toISOString();
+}
+return u;
+});
+db.saveUsers(users);
+state.currentUser.premiumUntil = date.toISOString();
+alert("[Google Play Store]: Integração Realizada com Sucesso! Seu período de 7 dias iniciou e os benefícios exclusivos carinhos mensais serão processados diretamente pela sua carteira Google.");
+actions.checkPremiumStatus();
+},
+logout: () => {
+state.currentUser = null;
+utils.switchScreen('screen-login');
+}
+};
