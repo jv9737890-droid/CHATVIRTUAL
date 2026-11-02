@@ -15,16 +15,42 @@
             --light: #f0f2f5;
         }
 
-        * { margin: 0; padding: 0; box-box: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background: #111b21; color: #e9edef; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+        }
         
-        .screen { display: none; width: 100%; height: 100%; max-width: 450px; background: var(--dark); flex-direction: column; position: relative; border: 1px solid #222; }
-        .active { display: flex; }
+        body { 
+            background: #111b21; 
+            color: #e9edef; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            overflow: hidden; 
+        }
+        
+        .screen { 
+            display: none; 
+            width: 100%; 
+            height: 100%; 
+            max-width: 450px; 
+            background: var(--dark); 
+            flex-direction: column; 
+            position: relative; 
+            border: 1px solid #222; 
+        }
+        
+        .screen.active { 
+            display: flex !important; 
+        }
 
         /* Telas de Autenticação */
         .auth-container { padding: 30px; display: flex; flex-direction: column; justify-content: center; height: 100%; gap: 20px; text-align: center; }
         input, select, button { padding: 12px; border-radius: 8px; border: 1px solid #333; background: #2a3942; color: #fff; font-size: 16px; outline: none; }
-        button { background: var(--secondary); font-weight: bold; cursor: pointer; border: none; transition: 0.2s; }
+        button { background: var(--secondary); font-weight: bold; cursor: pointer; border: none; transition: 0.2s; z-index: 10; }
         button:hover { background: #20b09e; }
         
         /* App Principal */
@@ -66,7 +92,7 @@
         .btn-action { background: #2a3942; color: white; }
 
         /* Flutuantes e Avisos */
-        .floating-btn { position: absolute; bottom: 20px; right: 20px; width: 55px; height: 55px; border-radius: 50%; background: var(--secondary); display: flex; align-items: center; justify-content: center; font-size: 24px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .floating-btn { position: absolute; bottom: 20px; right: 20px; width: 55px; height: 55px; border-radius: 50%; background: var(--secondary); display: flex; align-items: center; justify-content: center; font-size: 24px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 5; }
         .ai-banner { background: #00453a; color: #00e676; padding: 10px; font-size: 13px; text-align: center; display: none; border-radius: 8px; }
         .premium-badge { background: linear-gradient(45deg, #ffd700, #ffa500); color: #000; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: bold; margin-left: 5px; }
 
@@ -81,10 +107,10 @@
             <h2>🔑 Chave de Acesso</h2>
             <p>Se você já possui uma conta, insira sua chave secreta abaixo.</p>
             <input type="password" id="login-key" placeholder="Digite sua Chave de Acesso">
-            <button onclick="actions.login()">Entrar no App</button>
+            <button type="button" onclick="actions.login()">Entrar no App</button>
             <hr style="border-color: #222;">
             <p style="font-size: 14px; color: #8696a0;">Novo por aqui?</p>
-            <button style="background: #2a3942;" onclick="utils.switchScreen('screen-register')">Criar Nova Conta</button>
+            <button type="button" style="background: #2a3942;" onclick="utils.switchScreen('screen-register')">Criar Nova Conta</button>
         </div>
     </div>
 
@@ -92,7 +118,7 @@
     <div id="screen-register" class="screen">
         <div class="auth-container">
             <h2>📱 Cadastro (Passo 1/2)</h2>
-            <p>Defina seu país e digite até 10 algarismos. O sistema gerará o DDI e o prefixo [34] automaticamente.</p>
+            <p>Defina seu país e digite até 10 algarismos. O sistema gerará o DDI e o prefixo automaticamente.</p>
             <select id="reg-country">
                 <option value="+55">Brasil (+55)</option>
                 <option value="+1">EUA (+1)</option>
@@ -101,7 +127,8 @@
             </select>
             <input type="number" id="reg-phone" placeholder="Ex: 99991234">
             <div id="ai-status" class="ai-banner"></div>
-            <button onclick="actions.validatePhoneWithAI()">Analisar Número com A.I Chat</button>
+            <button type="button" onclick="actions.validatePhoneWithAI()">Analisar Número com A.I Chat</button>
+            <button type="button" style="background: #2a3942; margin-top: 10px;" onclick="utils.switchScreen('screen-login')">Voltar ao Login</button>
         </div>
     </div>
 
@@ -112,7 +139,7 @@
             <p id="confirmed-phone" style="color: var(--secondary); font-weight: bold;"></p>
             <input type="text" id="reg-name" placeholder="Seu Nome de Exibição">
             <input type="password" id="reg-key" placeholder="Crie uma Chave de Acesso">
-            <button onclick="actions.completeRegistration()">Finalizar Cadastro Permanente</button>
+            <button type="button" onclick="actions.completeRegistration()">Finalizar Cadastro Permanente</button>
         </div>
     </div>
 
@@ -124,7 +151,7 @@
         </div>
         <div class="tabs">
             <div class="tab active-tab" onclick="actions.switchTab('chats')">Conversas</div>
-            <div class="tab" onclick="actions.switchTab('groups')">Comunidades/Grupos</div>
+            <div class="tab" onclick="actions.switchTab('groups')">Comunidades</div>
             <div class="tab" onclick="actions.switchTab('settings')">Configurações</div>
         </div>
 
@@ -137,8 +164,8 @@
             <!-- Renderizado via JS -->
         </div>
 
-        <div id="tab-settings" class="list-container" style="display:none; padding: 20px; display:flex; flex-direction:column; gap:15px;">
-            <h4>⚙️ Configurações Estilo WhatsApp</h4>
+        <div id="tab-settings" class="list-container" style="display:none; padding: 20px; flex-direction:column; gap:15px;">
+            <h4>⚙️ Configurações</h4>
             <div>
                 <label style="font-size:12px; color:#8696a0;">Nome de Exibição:</label>
                 <input type="text" id="settings-name" style="width:100%; margin-top:5px;">
@@ -148,14 +175,14 @@
                 <input type="text" id="settings-pic" placeholder="https://..." style="width:100%; margin-top:5px;">
             </div>
             <div>
-                <label style="font-size:12px; color:#8696a0;">Seu Número (Exclusivo - Não Editável):</label>
-                <input type="text" id="settings-phone" disabled style="width:100%; margin-top:5px; opacity:0.6;">
-            </div>
-            <button onclick="actions.saveSettings()">Salvar Alterações</button>
-            <hr style="border-color:#222;">
-            <h4>⭐ Recursos Premium</h4>
-            <div id="premium-box" style="background:#202c33; padding:15px; border-radius:8px; text-align:center;">
-                <p id="premium-desc">Experimente o Premium por 7 dias grátis!</p>
+                <label style="font-size:12px; color:#8696a0;">Seu Número (Exclusivo):</label>
+Salvar Alterações
+
+⭐ Recursos Premium
+
+Experimente o Premium por 7 dias grátis!
+
+
 Sair da Conta
 +
 ←
@@ -167,7 +194,7 @@ Ao Vivo
 📞
 📹
 
-Sinal
+Enviar
 🎤
 
 Usuário
@@ -178,7 +205,6 @@ Conectando Chamada Segura (Estilo WhatsApp)...
 📷
 ❌
 
-// Banco de Dados fictício local permanente
 const db = {
 getUsers: () => JSON.parse(localStorage.getItem('app_users')) || [],
 saveUsers: (users) => localStorage.setItem('app_users', JSON.stringify(users)),
@@ -187,10 +213,9 @@ saveMessages: (chats) => localStorage.setItem('app_chats', JSON.stringify(chats)
 getGroups: () => JSON.parse(localStorage.getItem('app_groups')) || [],
 saveGroups: (groups) => localStorage.setItem('app_groups', JSON.stringify(groups))
 };
-// Estado da Sessão Atual
 let state = {
 currentUser: null,
-activeChatTarget: null, // Pode ser ID de usuário ou de grupo
+activeChatTarget: null,
 isGroupChat: false,
 mediaRecorder: null,
 audioChunks: [],
@@ -200,12 +225,12 @@ screenStream: null
 const utils = {
 switchScreen: (id) => {
 document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-document.getElementById(id).classList.add('active');
+const target = document.getElementById(id);
+if (target) target.classList.add('active');
 },
 randomRange: (min, max) => Math.floor(Math.random() * (max - min + 1)) + min
 };
 const actions = {
-// Inteligência Artificial validando número exclusivo
 validatePhoneWithAI: () => {
 const country = document.getElementById('reg-country').value;
 const inputNum = document.getElementById('reg-phone').value;
@@ -214,7 +239,6 @@ if(!inputNum || inputNum.length > 10) {
 alert("O número precisa conter até 10 algarismos!");
 return;
 }
-// Regra do escopo: + [País] + [Região Aleatória] + [34] + [Resto definido pelo usuário]
 const randomRegion = utils.randomRange(11, 99);
 const finalGeneratedPhone = ${country}(${randomRegion})34${inputNum};
 aiStatus.style.display = "block";
@@ -249,7 +273,7 @@ const newUser = { id: Date.now(), name, phone, key, profilePic: '', premiumUntil
 users.push(newUser);
 db.saveUsers(users);
 state.currentUser = newUser;
-alert(Conta criada com sucesso! Guarde sua chave de acesso para entrar: ${key});
+alert(Conta criada com sucesso! Sua chave de acesso para entrar é: ${key});
 actions.loadMainDashboard();
 },
 login: () => {
@@ -266,7 +290,6 @@ alert("Chave de acesso inválida ou não encontrada!");
 loadMainDashboard: () => {
 utils.switchScreen('screen-main');
 document.getElementById('app-user-title').innerText = state.currentUser.name;
-// Setar inputs de configurações
 document.getElementById('settings-name').value = state.currentUser.name;
 document.getElementById('settings-phone').value = state.currentUser.phone;
 document.getElementById('settings-pic').value = state.currentUser.profilePic || '';
@@ -276,7 +299,7 @@ actions.checkPremiumStatus();
 },
 switchTab: (tabName) => {
 document.querySelectorAll('.tab').forEach(t => t.classList.remove('active-tab'));
-event.target.classList.add('active-tab');
+if(event) event.target.classList.add('active-tab');
 document.getElementById('tab-chats').style.display = tabName === 'chats' ? 'block' : 'none';
 document.getElementById('tab-groups').style.display = tabName === 'groups' ? 'block' : 'none';
 document.getElementById('tab-settings').style.display = tabName === 'settings' ? 'flex' : 'none';
@@ -287,26 +310,38 @@ const container = document.getElementById('tab-chats');
 const users = db.getUsers().filter(u => u.id !== state.currentUser.id);
 container.innerHTML = users.length ? '' : 'Nenhum contato encontrado.';
 users.forEach(u => {
-container.innerHTML +=  <div class="item-row" onclick="actions.openChat(${u.id}, false)"> <div class="item-img">${u.name[0].toUpperCase()}</div> <div class="item-info"> <div class="item-name">${u.name}</div> <div class="item-sub">${u.phone}</div> </div> </div>;
+const row = document.createElement('div');
+row.className = 'item-row';
+row.onclick = () => actions.openChat(u.id, false);
+row.innerHTML =  <div class="item-img">${u.name.substring(0,2).toUpperCase()}</div> <div class="item-info"> <div class="item-name">${u.name}</div> <div class="item-sub">${u.phone}</div> </div>;
+container.appendChild(row);
 });
 },
 renderGroupsTab: () => {
 const container = document.getElementById('tab-groups');
 const groups = db.getGroups();
-container.innerHTML = groups.length ? '' : 'Nenhum grupo ou comunidade ativa.';
+container.innerHTML = groups.length ? '' : 'Nenhuma comunidade ativa.';
 groups.forEach(g => {
-container.innerHTML +=  <div class="item-row" onclick="actions.openChat(${g.id}, true)"> <div class="item-img" style="background:#005c4b">👥</div> <div class="item-info"> <div class="item-name">${g.title}</div> <div class="item-sub">Comunidade Global</div> </div> </div>;
+const row = document.createElement('div');
+row.className = 'item-row';
+row.onclick = () => actions.openChat(g.id, true);
+row.innerHTML =  <div class="item-img" style="background:#005c4b">👥</div> <div class="item-info"> <div class="item-name">${g.title}</div> <div class="item-sub">Comunidade Global</div> </div>;
+container.appendChild(row);
 });
 },
 openAddModal: () => {
-const option = prompt("Digite [1] para Adicionar Pessoa por Nome/Número ou [2] para Criar Grupo/Comunidade:");
+const option = prompt("Escolha uma opção:\n[1] Adicionar Pessoa por Nome/Número\n[2] Criar Comunidade/Grupo");
 if(option === "1") {
 const search = prompt("Digite o nome ou número de telefone exato:");
 const user = db.getUsers().find(u => u.name === search || u.phone === search);
-if(user) alert(Contato encontrado: ${user.name} (${user.phone})! Já está disponível na aba de Conversas.);
-else alert("Nenhum usuário correspondente encontrado.");
+if(user) {
+alert(Contato encontrado: ${user.name}! Adicionado à sua lista.);
+actions.renderChatsTab();
+} else {
+alert("Nenhum usuário encontrado.");
+}
 } else if(option === "2") {
-const title = prompt("Digite o nome da Nova Comunidade/Grupo:");
+const title = prompt("Digite o nome da Nova Comunidade:");
 if(title) {
 const groups = db.getGroups();
 groups.push({ id: Date.now(), title: title });
@@ -350,8 +385,25 @@ content = `
 🎵 Áudio Gravado
 ; } else { content = ${m.text}`;
 }
-const deleteBtn = (isMine && !m.isDeleted) ? <span class="delete-btn" onclick="actions.deleteMessage(${m.id})">Apagar</span> : '';
-container.innerHTML +=  <div class="msg ${isMine ? 'out' : 'in'}"> ${deleteBtn} <div style="font-size:11px; color:#8696a0; margin-bottom:2px;">${m.senderName}</div> ${content} </div>;
+const msgDiv = document.createElement('div');
+msgDiv.className = msg ${isMine ? 'out' : 'in'};
+if (isMine && !m.isDeleted) {
+const delBtn = document.createElement('span');
+delBtn.className = 'delete-btn';
+delBtn.innerText = 'Apagar';
+delBtn.onclick = () => actions.deleteMessage(m.id);
+msgDiv.appendChild(delBtn);
+}
+const nameLabel = document.createElement('div');
+nameLabel.style.fontSize = '11px';
+nameLabel.style.color = '#8696a0';
+nameLabel.style.marginBottom = '2px';
+nameLabel.innerText = m.senderName;
+const contentBody = document.createElement('div');
+contentBody.innerHTML = content;
+msgDiv.appendChild(nameLabel);
+msgDiv.appendChild(contentBody);
+container.appendChild(msgDiv);
 });
 container.scrollTop = container.scrollHeight;
 },
@@ -384,7 +436,6 @@ return m;
 db.saveMessages(messages);
 actions.renderMessages();
 },
-// Funcionalidade de Áudio com Microfone (Pressionar e segurar)
 startAudioRecord: async () => {
 try {
 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -424,7 +475,6 @@ state.mediaRecorder.stop();
 document.getElementById('audio-record-btn').classList.remove('recording');
 }
 },
-// Chamada de voz, vídeo e compartilhamento de tela via WebRTC estrutural simulado
 startCall: async (type) => {
 document.getElementById('call-screen').style.display = "flex";
 document.getElementById('call-user-name').innerText = document.getElementById('chat-header-name').innerText;
@@ -434,10 +484,9 @@ video: type === 'video',
 audio: true
 });
 document.getElementById('local-video').srcObject = state.localStream;
-// Mock da outra pessoa respondendo e transmitindo a chamada de volta
 document.getElementById('remote-video').srcObject = state.localStream;
 } catch (err) {
-document.getElementById('call-status').innerText = "Erro ao acessar dispositivos de mídia.";
+document.getElementById('call-status').innerText = "Erro ao acessar mídias.";
 }
 },
 toggleScreenShare: async () => {
@@ -451,7 +500,7 @@ state.screenStream = null;
 document.getElementById('local-video').srcObject = state.localStream;
 }
 } catch (err) {
-console.log("Compartilhamento de tela cancelado.");
+console.log("Compartilhamento cancelado.");
 }
 },
 endCall: () => {
@@ -476,24 +525,22 @@ state.currentUser.profilePic = newPic;
 alert("Configurações atualizadas!");
 actions.loadMainDashboard();
 },
-// Lógica de Premium Integrado e API Google fake de assinatura recorrente
 checkPremiumStatus: () => {
 const badge = document.getElementById('user-premium-status');
 const btn = document.getElementById('premium-btn');
 const desc = document.getElementById('premium-desc');
 if (state.currentUser.premiumUntil && new Date(state.currentUser.premiumUntil) > new Date()) {
-badge.innerHTML = <span class="premium-badge">PREMIUM COBRADO</span>;
+badge.innerHTML = <span class="premium-badge">PREMIUM ATIVO</span>;
 desc.innerText = "Sua conta possui recursos exclusivos liberados!";
 btn.style.display = "none";
 } else {
 badge.innerHTML = '';
-desc.innerText = "Experimente o Premium por 7 dias grátis! Após o período, cobrança mensal automática de R$ 89,90.";
+desc.innerText = "Experimente o Premium por 7 dias grátis! Após o período, cobrança mensal automática.";
 btn.style.display = "block";
 btn.innerText = "Resgatar 7 Dias Grátis";
 }
 },
 handlePremium: () => {
-// Testar grátis por 7 dias
 const date = new Date();
 date.setDate(date.getDate() + 7);
 let users = db.getUsers();
@@ -505,7 +552,7 @@ return u;
 });
 db.saveUsers(users);
 state.currentUser.premiumUntil = date.toISOString();
-alert("[Google Play Store]: Integração Realizada com Sucesso! Seu período de 7 dias iniciou e os benefícios exclusivos carinhos mensais serão processados diretamente pela sua carteira Google.");
+alert("[Google Play]: Assinatura realizada! Seu teste de 7 dias começou.");
 actions.checkPremiumStatus();
 },
 logout: () => {
@@ -513,3 +560,5 @@ state.currentUser = null;
 utils.switchScreen('screen-login');
 }
 };
+
+
