@@ -3,470 +3,275 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>💬 Chat Virtual — Conectando Pessoas</title>
-    <!-- Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-storage-compat.js"></script>
-    
+    <title>A.I Chat — Seu Mensageiro Exclusivo</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        :root {
-            --primaria: #2563eb;
-            --secundaria: #e0f2fe;
-            --mensagem-me: #dbeafe;
-            --mensagem-outro: #f3f4f6;
-            --lida: #bfdbfe;
-            --sem-sinal: #fef3c7;
-        }
-        body { background: #f0f4f8; min-height: 100vh; }
-
-        /* Telas */
-        .tela { display: none; }
-        .tela.ativa { display: block; }
-
-        /* Tela de Login/Cadastro */
-        .caixa-auth {
-            max-width: 420px; margin: 0 auto; padding: 40px 25px;
-            background: white; min-height: 100vh;
-        }
-        .logo { text-align: center; margin-bottom: 30px; }
-        .logo h1 { color: var(--primaria); font-size: 28px; }
-        .abas { display: flex; margin-bottom: 25px; border-radius: 10px; overflow: hidden; border: 1px solid #ddd; }
-        .aba { flex: 1; padding: 12px; border: none; background: white; cursor: pointer; font-size: 15px; }
-        .aba.ativa { background: var(--primaria); color: white; }
-        input {
-            width: 100%; padding: 14px; margin: 8px 0;
-            border: 1px solid #ddd; border-radius: 8px; font-size: 15px;
-        }
-        button.botao {
-            width: 100%; padding: 14px; background: var(--primaria); color: white;
-            border: none; border-radius: 8px; font-size: 16px; cursor: pointer; margin-top: 10px;
-        }
-        button.botao:hover { background: #1d4ed8; }
-        .erro { color: #dc2626; font-size: 14px; margin-top: 10px; display: none; }
-
-        /* Cabeçalho Principal */
-        .cabecalho {
-            background: var(--primaria); color: white; padding: 15px 20px;
-            display: flex; justify-content: space-between; align-items: center; position: fixed; width: 100%; top: 0; z-index: 100;
-        }
-        .cabecalho h2 { font-size: 18px; }
-        .cabecalho .numero { font-size: 12px; opacity: 0.8; }
-        .menu-btn { background: rgba(255,255,255,0.2); border: none; color: white; padding: 8px 12px; border-radius: 6px; cursor: pointer; margin-left: 8px; }
-        .menu-dropdown {
-            position: absolute; right: 15px; top: 55px; background: white; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            display: none; overflow: hidden; z-index: 200;
-        }
-        .menu-dropdown.mostrar { display: block; }
-        .menu-dropdown button {
-            display: block; width: 100%; text-align: left; padding: 12px 20px; border: none; background: white; cursor: pointer; font-size: 14px; color: #333;
-        }
-        .menu-dropdown button:hover { background: #f3f4f6; }
-
-        /* Tela Inicial — Conversas */
-        .conteudo { padding-top: 70px; padding-bottom: 80px; }
-        .barra-busca { padding: 10px 15px; position: sticky; top: 65px; background: #f0f4f8; z-index: 50; }
-        .barra-busca input { margin: 0; width: 100%; }
-        .btn-adicionar {
-            position: fixed; bottom: 25px; right: 25px; width: 60px; height: 60px; border-radius: 50%;
-            background: var(--primaria); color: white; border: none; font-size: 28px; cursor: pointer;
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4); z-index: 90;
-        }
-        .item-contato {
-            display: flex; align-items: center; padding: 15px 20px; background: white; border-bottom: 1px solid #eee; cursor: pointer;
-        }
-        .item-contato:hover { background: #f9fafb; }
-        .avatar {
-            width: 48px; height: 48px; border-radius: 50%; background: var(--primaria); color: white; display: flex; align-items: center; justify-content: center; font-size: 20px; margin-right: 15px;
-        }
-        .info-contato h3 { font-size: 16px; }
-        .info-contato p { font-size: 13px; color: #888; }
-        .sem-conversas { text-align: center; padding: 60px 20px; color: #888; }
-
-        /* Tela de Chat */
-        .chat-cabecalho {
-            position: fixed; top: 0; width: 100%; background: var(--primaria); color: white; padding: 12px 15px;
-            display: flex; align-items: center; z-index: 100;
-        }
-        .voltar { background: none; border: none; color: white; font-size: 20px; cursor: pointer; margin-right: 10px; }
-        .chat-nome { flex: 1; font-size: 17px; font-weight: 500; }
-        .chat-acao button {
-            background: rgba(255,255,255,0.2); border: none; color: white; padding: 6px 10px; border-radius: 6px; cursor: pointer; margin-left: 5px; font-size: 16px;
-        }
-        .chat-mensagens {
-            padding: 70px 15px 80px; overflow-y: auto; min-height: 100vh; background: #f0f4f8;
-        }
-        .mensagem {
-            max-width: 75%; margin: 8px 0; padding: 10px 14px; border-radius: 18px; line-height: 1.4; position: relative;
-        }
-        .mensagem.eu {
-            background: var(--mensagem-me); color: #1e40af; margin-left: auto; border-bottom-right-radius: 4px;
-        }
-        .mensagem.eu.lida { background: var(--lida); }
-        .mensagem.outro {
-            background: var(--mensagem-outro); color: #1f2937; margin-right: auto; border-bottom-left-radius: 4px;
-        }
-        .mensagem .hora { font-size: 10px; opacity: 0.6; text-align: right; margin-top: 4px; }
-        .mensagem .status { font-size: 10px; opacity: 0.5; text-align: right; margin-top: 2px; }
-        .sem-sinal-aviso { font-size: 11px; color: #92400e; background: var(--sem-sinal); padding: 2px 8px; border-radius: 10px; display: inline-block; margin-top: 4px; }
-        .chat-entrada {
-            position: fixed; bottom: 0; width: 100%; background: white; padding: 10px 15px; display: flex; gap: 8px; border-top: 1px solid #ddd;
-        }
-        .chat-entrada input { flex: 1; margin: 0; }
-        .chat-entrada button {
-            width: 44px; height: 44px; border-radius: 50%; border: none; background: var(--primaria); color: white; cursor: pointer; font-size: 18px; padding: 0;
-        }
-
-        /* Modal Adicionar Contato */
-        .modal-fundo {
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 300;
-        }
-        .modal-fundo.mostrar { display: flex; }
-        .modal {
-            background: white; border-radius: 12px; padding: 25px; width: 90%; max-width: 400px;
-        }
-        .modal h3 { margin-bottom: 15px; }
-        .modal button.fechar {
-            margin-top: 15px; background: #e5e7eb; color: #333;
-        }
-        .resultado-busca { margin-top: 12px; }
-        .resultado-item {
-            display: flex; align-items: center; padding: 10px; border: 1px solid #eee; border-radius: 8px; margin-top: 8px; cursor: pointer;
-        }
-        .resultado-item:hover { background: #f9fafb; }
-        .denunciar-btn { color: #dc2626; background: none; border: none; font-size: 12px; cursor: pointer; margin-top: 4px; }
-        
-        /* Notificação */
-        .notificacao {
-            position: fixed; top: 70px; right: 15px; background: white; padding: 12px 18px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            display: none; z-index: 150; max-width: 300px;
-        }
-        .notificacao.mostrar { display: block; animation: deslizar 0.3s ease-out; }
-        @keyframes deslizar { from { transform: translateY(-10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif}
+        :root{--prim:#2563eb;--sec:#1e40af;--sucesso:#10b981;--perigo:#ef4444;--fundo:#f0f4f8;--escuro:#1f2937;--claro:#fff;--cinza:#e5e7eb;--texto:#374151;--sombra:0 4px 12px rgba(0,0,0,.1)}
+        body{background:var(--fundo);height:100vh;overflow:hidden}
+        .tela{display:none;width:100%;height:100vh}
+        .ativa{display:flex}
+        .caixa{background:var(--claro);border-radius:16px;box-shadow:var(--sombra);padding:2rem;max-width:420px;width:90%;margin:auto;text-align:center}
+        input,button,select{width:100%;padding:.85rem 1rem;margin:.5rem 0;border-radius:10px;border:1px solid var(--cinza);font-size:1rem}
+        button{background:var(--prim);color:white;border:none;cursor:pointer;font-weight:600;transition:.2s}
+        button:hover{background:var(--sec)}
+        .btn-perigo{background:var(--perigo)}
+        .btn-sucesso{background:var(--sucesso)}
+        .barra-superior{background:var(--prim);color:white;padding:1rem;display:flex;align-items:center;justify-content:space-between}
+        .conteudo{display:flex;height:calc(100vh - 60px)}
+        .lado-esq{width:300px;background:white;border-right:1px solid var(--cinza);overflow-y:auto}
+        .lado-dir{flex:1;display:flex;flex-direction:column;background:#f9fafb}
+        .item-contato{padding:1rem;border-bottom:1px solid var(--cinza);cursor:pointer}
+        .item-contato:hover{background:var(--fundo)}
+        .area-msgs{flex:1;padding:1rem;overflow-y:auto;background:#eff6ff}
+        .msg{max-width:70%;margin:.5rem 0;padding:.75rem 1rem;border-radius:18px;position:relative}
+        .enviada{background:var(--prim);color:white;margin-left:auto;border-bottom-right-radius:4px}
+        .recebida{background:white;color:var(--texto);margin-right:auto;border-bottom-left-radius:4px}
+        .apagada{background:#e5e7eb;color:#6b7280;font-style:italic}
+        .caixa-envio{display:flex;padding:1rem;background:white;border-top:1px solid var(--cinza)}
+        .caixa-envio input{flex:1;margin:0;margin-right:.5rem}
+        .btn-grava{width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem}
+        .btn-grava.gravando{background:var(--perigo);animation:pulsar 1s infinite}
+        @keyframes pulsar{0%{transform:scale(1)}50%{transform:scale(1.1)}100%{transform:scale(1)}}
+        .barra-ligacao{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.9);color:white;display:none;flex-direction:column;align-items:center;justify-content:center;z-index:1000}
+        .acoes-ligacao{position:absolute;bottom:2rem;display:flex;gap:1rem}
+        .acoes-ligacao button{width:60px;height:60px;border-radius:50%}
+        .config{padding:1rem}
+        .aba{padding:.75rem 1rem;cursor:pointer;border-bottom:3px solid transparent}
+        .aba.ativa{border-bottom-color:var(--prim);color:var(--prim);font-weight:bold}
+        .alerta{padding:.75rem;border-radius:8px;margin:1rem 0;display:none}
+        .premium{background:linear-gradient(135deg,#f59e0b,#d97706);color:white;border-radius:12px;padding:1rem;margin:1rem 0}
+        .foto-perfil{width:80px;height:80px;border-radius:50%;object-fit:cover;margin-bottom:1rem;background:var(--cinza);font-size:2rem;display:flex;align-items:center;justify-content:center}
+        .oculto{display:none !important}
     </style>
 </head>
 <body>
 
-<!-- ================== TELA DE LOGIN / CADASTRO ================== -->
-<div id="tela-auth" class="tela ativa">
-    <div class="caixa-auth">
-        <div class="logo">
-            <h1>💬 Chat Virtual</h1>
-            <p style="color:#888; font-size:14px;">Converse com quem você quiser!</p>
-        </div>
+<!-- Tela de Cadastro -->
+<div class="tela ativa" id="telaCadastro">
+    <div class="caixa">
+        <h1>✨ A.I Chat</h1>
+        <p style="color:#6b7280;margin-bottom:2rem;">Comunicação exclusiva, segura e permanente</p>
         
-        <div class="abas">
-            <button class="aba ativa" id="aba-entrar" onclick="mostrarAba('entrar')">Entrar</button>
-            <button class="aba" id="aba-cadastrar" onclick="mostrarAba('cadastrar')">Criar Conta</button>
-        </div>
-
-        <!-- Entrar -->
-        <div id="form-entrar">
-            <input type="email" id="login-email" placeholder="Seu e-mail">
-            <input type="password" id="login-senha" placeholder="Sua senha">
-            <button class="botao" onclick="entrar()">Entrar</button>
-            <div class="erro" id="erro-login"></div>
-        </div>
-
-        <!-- Cadastrar -->
-        <div id="form-cadastrar" style="display:none;">
-            <input type="text" id="cad-nome" placeholder="Seu nome completo">
-            <input type="email" id="cad-email" placeholder="Seu e-mail">
-            <input type="password" id="cad-senha" placeholder="Criar senha (mínimo 6 dígitos)">
-            <button class="botao" onclick="cadastrar()">Criar minha conta</button>
-            <div class="erro" id="erro-cadastro"></div>
-        </div>
+        <label>Seu País:</label>
+        <select id="pais" onchange="atualizarMascara()">
+            <option value="+55">Brasil (+55)</option>
+            <option value="+1">Estados Unidos/Canadá (+1)</option>
+            <option value="+351">Portugal (+351)</option>
+            <option value="+44">Reino Unido (+44)</option>
+        </select>
+        
+        <label>Região (2 dígitos):</label>
+        <input type="text" id="ddd" maxlength="2" placeholder="Ex: 34" oninput="this.value=this.value.replace(/\D/g,'')">
+        
+        <label>Número (até 10 dígitos, sem WhatsApp):</label>
+        <input type="text" id="numeroBase" maxlength="10" placeholder="Ex: 9999999999" oninput="this.value=this.value.replace(/\D/g,'')">
+        
+        <p id="mascaraNumero" style="color:#6b7280;font-size:.9rem;margin:.5rem 0;"></p>
+        <p id="analiseIA" style="color:var(--prim);font-size:.9rem;display:none;">🧠 A.I Chat analisando banco de dados...</p>
+        <p id="resultadoIA" style="font-size:.9rem;margin:.5rem 0;"></p>
+        
+        <button onclick="validarECadastrar()">Criar Conta</button>
+        <p style="margin-top:1rem;">Já tem conta? <a href="#" onclick="mostrarTela('telaLogin')" style="color:var(--prim)">Entrar</a></p>
     </div>
 </div>
 
-<!-- ================== TELA PRINCIPAL — CONVERSAS ================== -->
-<div id="tela-inicial" class="tela">
-    <div class="cabecalho">
+<!-- Tela de Login -->
+<div class="tela" id="telaLogin">
+    <div class="caixa">
+        <h2>🔐 Entrar — A.I Chat</h2>
+        <input type="text" id="loginNumero" placeholder="Número de telefone">
+        <input type="password" id="loginChave" placeholder="Chave de Acesso">
+        <button onclick="entrar()">Entrar</button>
+        <p style="margin-top:1rem;">Não tem conta? <a href="#" onclick="mostrarTela('telaCadastro')" style="color:var(--prim)">Criar conta</a></p>
+    </div>
+</div>
+
+<!-- Definir Nome e Chave -->
+<div class="tela" id="telaPerfil">
+    <div class="caixa">
+        <h2>👤 Complete seu Perfil</h2>
+        <p id="seuNumeroExibido" style="color:var(--prim);font-weight:bold;margin:1rem 0;"></p>
+        <input type="text" id="nomeExibicao" placeholder="Nome de exibição">
+        <input type="password" id="chaveAcesso" placeholder="Criar Chave de Acesso (guarde bem!)">
+        <input type="password" id="chaveConfirma" placeholder="Repetir Chave de Acesso">
+        <button onclick="salvarPerfil()">Salvar e Entrar</button>
+    </div>
+</div>
+
+<!-- Tela Principal -->
+<div class="tela" id="telaPrincipal">
+    <div class="barra-superior">
+        <h3 id="tituloPagina">Conversas</h3>
         <div>
-            <h2>💬 Chat Virtual</h2>
-            <div class="numero" id="meu-numero"></div>
-        </div>
-        <div>
-            <button class="menu-btn" onclick="toggleMenu()">☰</button>
-            <div class="menu-dropdown" id="menu-usuario">
-                <button onclick="sair()">🚪 Sair da conta</button>
-                <button onclick="trocarConta()">🔄 Trocar de conta</button>
-                <button onclick="criarGrupo()">👥 Criar grupo</button>
-            </div>
+            <button style="width:auto;padding:.5rem 1rem;background:transparent;border:1px solid white;margin:0 .25rem" onclick="abrirConfig()">⚙️</button>
+            <button style="width:auto;padding:.5rem 1rem;background:transparent;border:1px solid white;margin:0 .25rem" onclick="abrirPremium()">💎 Premium</button>
+            <button style="width:auto;padding:.5rem 1rem;background:transparent;border:1px solid white;margin:0 .25rem" onclick="sair()">🚪</button>
         </div>
     </div>
-
     <div class="conteudo">
-        <div class="barra-busca">
-            <input type="text" id="busca-conversas" placeholder="🔍 Pesquisar conversas...">
-        </div>
-        <div id="lista-conversas">
-            <div class="sem-conversas">
-                <p>📭 Nenhuma conversa ainda</p>
-                <p style="font-size:13px; margin-top:8px;">Clique no botão + para adicionar pessoas!</p>
+        <div class="lado-esq">
+            <div style="padding:1rem">
+                <input type="text" id="buscar" placeholder="Buscar por nome ou número..." oninput="filtrarContatos()">
+                <button style="margin-top:.5rem" onclick="abrirAdicionar()">➕ Adicionar Pessoa</button>
+                <button onclick="abrirGrupo()" style="background:var(--sucesso)">👥 Criar Grupo/Comunidade</button>
             </div>
+            <div id="listaContatos"></div>
         </div>
-    </div>
-
-    <button class="btn-adicionar" onclick="abrirModalAdicionar()">+</button>
-</div>
-
-<!-- ================== TELA DE CHAT ================== -->
-<div id="tela-chat" class="tela">
-    <div class="chat-cabecalho">
-        <button class="voltar" onclick="voltarParaConversas()">←</button>
-        <div class="chat-nome" id="chat-nome"></div>
-        <div class="chat-acao">
-            <button onclick="iniciarChamada('voz')" title="Chamada de voz">📞</button>
-            <button onclick="iniciarChamada('video')" title="Chamada de vídeo">📹</button>
-        </div>
-    </div>
-
-    <div class="chat-mensagens" id="caixa-mensagens"></div>
-
-    <div class="chat-entrada">
-        <button onclick="enviarAudio()" title="Enviar áudio">🎙️</button>
-        <button onclick="enviarMidia()" title="Enviar foto/vídeo">📎</button>
-        <input type="text" id="texto-mensagem" placeholder="Escreva uma mensagem..." onkeypress="if(event.key==='Enter') enviarMensagem()">
-        <button onclick="enviarMensagem()">➤</button>
-    </div>
-</div>
-
-<!-- ================== MODAL — Adicionar Contato ================== -->
-<div class="modal-fundo" id="modal-adicionar">
-    <div class="modal">
-        <h3>➕ Adicionar Contato</h3>
-        <input type="text" id="buscar-pessoa" placeholder="Digite o nome ou número (34 88...)">
-        <button class="botao" style="margin-top:5px;" onclick="buscarUsuario()">🔍 Buscar</button>
-        <div class="resultado-busca" id="resultado-busca"></div>
-        <button class="botao fechar" onclick="fecharModalAdicionar()">Fechar</button>
-    </div>
-</div>
-
-<!-- ================== NOTIFICAÇÃO ================== -->
-<div class="notificacao" id="notificacao">
-    <strong id="notif-de"></strong>
-    <p id="notif-texto"></p>
-</div>
-
-<!-- Áudio de notificação -->
-<audio id="som-notificacao" preload="auto">
-    <source src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" type="audio/mpeg">
-
-
-<script>
-// ======================================================
-// 🔧 CONFIGURAÇÕES DO FIREBASE — COLOQUE SUAS INFOS AQUI
-// ======================================================
-const firebaseConfig = {
-    // >>> COLOQUE AQUI SEU firebaseConfig DO FIREBASE <<<
-    apiKey: "",
-    authDomain: "",
-    projectId: "",
-    storageBucket: "",
-    messagingSenderId: "",
-    appId: ""
-};
-
-// Inicializar Firebase
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
-const storage = firebase.storage();
-
-// Estado do app
-let usuarioAtual = null;
-let numeroUsuario = null;
-let chatAtivo = null;
-let temConexao = navigator.onLine;
-let ouvindoMensagens = null;
-
-// Lista de palavras proibidas (sistema de moderação simples)
-const palavrasProibidas = ['palavrao1', 'palavrao2', 'conteudo indevido'];
-
-// ======================================================
-// 📱 GERAR NÚMERO DO USUÁRIO — formato: 34 88XXXX-XXXX
-// ======================================================
-function gerarNumero() {
-    const parte1 = Math.floor(Math.random() * 9000) + 1000;
-    const parte2 = Math.floor(Math.random() * 9000) + 1000;
-    return `34 88${parte1}-${parte2}`;
-}
-
-// ======================================================
-// 📱 TELAS E NAVEGAÇÃO
-// ======================================================
-function mostrarAba(tipo) {
-    document.getElementById('aba-entrar').classList.toggle('ativa', tipo === 'entrar');
-    document.getElementById('aba-cadastrar').classList.toggle('ativa', tipo === 'cadastrar');
-    document.getElementById('form-entrar').style.display = tipo === 'entrar' ? 'block' : 'none';
-    document.getElementById('form-cadastrar').style.display = tipo === 'cadastrar' ? 'block' : 'none';
-    esconderErros();
-}
-
-function esconderErros() {
-    document.getElementById('erro-login').style.display = 'none';
-    document.getElementById('erro-cadastro').style.display = 'none';
-}
-
-function mostrarTela(nome) {
-    document.querySelectorAll('.tela').forEach(t => t.classList.remove('ativa'));
-    document.getElementById(nome).classList.add('ativa');
-}
-
-function toggleMenu() {
-    document.getElementById('menu-usuario').classList.toggle('mostrar');
-}
-
-// ======================================================
-// 🔑 AUTENTICAÇÃO — Cadastro e Login
-// ======================================================
-async function cadastrar() {
-    const nome = document.getElementById('cad-nome').value.trim();
-    const email = document.getElementById('cad-email').value.trim();
-    const senha = document.getElementById('cad-senha').value;
-    const erroEl = document.getElementById('erro-cadastro');
-    
-    if (!nome || !email || senha.length < 6) {
-        erroEl.textContent = 'Preencha tudo! Senha com pelo menos 6 dígitos.';
-        erroEl.style.display = 'block';
-        return;
-    }
-
-    try {
-        const cred = await auth.createUserWithEmailAndPassword(email, senha);
-        numeroUsuario = gerarNumero();
-        await db.collection('usuarios').doc(cred.user.uid).set({
-            nome: nome,
-            email: email,
-            numero: numeroUsuario,
-            criadoEm: firebase.firestore.FieldValue.serverTimestamp(),
-            ultimoAcesso: firebase.firestore.FieldValue.serverTimestamp()
-        });
-        await cred.user.updateProfile({ displayName: nome });
-    } catch (erro) {
-        erroEl.textContent = erro.message;
-        erroEl.style.display = 'block';
-    }
-}
-
-async function entrar() {
-    const email = document.getElementById('login-email').value.trim();
-    const senha = document.getElementById('login-senha').value;
-    const erroEl = document.getElementById('erro-login');
-    
-    if (!email || !senha) {
-        erroEl.textContent = 'Digite e-mail e senha!';
-        erroEl.style.display = 'block';
-        return;
-    }
-
-    try {
-        await auth.signInWithEmailAndPassword(email, senha);
-    } catch (erro) {
-        erroEl.textContent = erro.message;
-        erroEl.style.display = 'block';
-    }
-}
-
-function sair() {
-    if (confirm('Tem certeza que deseja sair?')) {
-        auth.signOut();
-        chatAtivo = null;
-    }
-}
-
-function trocarConta() {
-    auth.signOut();
-    document.getElementById('menu-usuario').classList.remove('mostrar');
-}
-
-// Verificar se usuário já está logado
-auth.onAuthStateChanged(async user => {
-    if (user) {
-        usuarioAtual = user;
-        // Buscar número do usuário
-        const doc = await db.collection('usuarios').doc(user.uid).get();
-        if (doc.exists) {
-            numeroUsuario = doc.data().numero;
-            document.getElementById('meu-numero').textContent = numeroUsuario;
-        }
-        mostrarTela('tela-inicial');
-        carregarConversas();
-        monitorarConexao();
-    } else {
-        usuarioAtual = null;
-        mostrarTela('tela-auth');
-    }
-});
-
-// ======================================================
-// 🔍 BUSCAR E ADICIONAR PESSOAS
-// ======================================================
-function abrirModalAdicionar() {
-    document.getElementById('modal-adicionar').classList.add('mostrar');
-    document.getElementById('buscar-pessoa').value = '';
-    document.getElementById('resultado-busca').innerHTML = '';
-}
-
-function fecharModalAdicionar() {
-    document.getElementById('modal-adicionar').classList.remove('mostrar');
-}
-
-async function buscarUsuario() {
-    const termo = document.getElementById('buscar-pessoa').value.trim();
-    const resultadoEl = document.getElementById('resultado-busca');
-    resultadoEl.innerHTML = '<p>Buscando...</p>';
-
-    try {
-        let usuarios = [];
-        // Buscar por número
-        const numeroSnap = await db.collection('usuarios')
-            .where('numero', '==', termo)
-            .limit(5).get();
-        
-        if (!numeroSnap.empty) {
-            numeroSnap.forEach(doc => {
-                if (doc.id !== usuarioAtual.uid) usuarios.push({ id: doc.id, ...doc.data() });
-            });
-        }
-
-        // Buscar por nome
-        if (usuarios.length === 0) {
-            const nomeSnap = await db.collection('usuarios')
-                .where('nome', '>=', termo)
-                .where('nome', '<=', termo + '\uf8ff')
-                .limit(10).get();
-            
-            nomeSnap.forEach(doc => {
-                if (doc.id !== usuarioAtual.uid) usuarios.push({ id: doc.id, ...doc.data() });
-            });
-        }
-
-        if (usuarios.length === 0) {
-            resultadoEl.innerHTML = '<p style="color:#888;">Nenhum usuário encontrado</p>';
-        } else {
-            resultadoEl.innerHTML = usuarios.map(u => `
-                <div class="resultado-item" onclick="iniciarConversa('${u.id}', '${u.nome.replace(/'/g, "\\'")}', '${u.numero}')">
-                    <div class="avatar">${u.nome.charAt(0).toUpperCase()}</div>
+        <div class="lado-dir" id="areaConversa">
+            <div style="padding:2rem;text-align:center;color:#6b7280" id="seletorConversa">
+                ← Selecione uma conversa ou adicione alguém para começar
+            </div>
+            <div class="oculto" id="conversaAtiva">
+                <div style="padding:.75rem;border-bottom:1px solid var(--cinza);display:flex;justify-content:space-between;align-items:center">
+                    <span id="nomeConversaAtiva"></span>
                     <div>
-                        <strong>${u.nome}</strong><br>
-                        <small>${u.numero}</small>
+                        <button style="width:auto;padding:.3rem .7rem;margin:0 .1rem" onclick="iniciarLigacao('voz')">📞</button>
+                        <button style="width:auto;padding:.3rem .7rem;margin:0 .1rem" onclick="iniciarLigacao('video')">📹</button>
                     </div>
                 </div>
-            `).join('');
-        }
-    } catch (erro) {
-        resultadoEl.innerHTML = `<p style="color:red;">Erro: ${erro.message}</p>`;
-    }
+                <div class="area-msgs" id="caixaMensagens"></div>
+                <div class="caixa-envio">
+                    <input type="text" id="textoMensagem" placeholder="Digite sua mensagem..." onkeypress="if(event.key==='Enter')enviarTexto()">
+                    <button onclick="enviarTexto()" style="width:auto;padding:.75rem">➤</button>
+                    <button class="btn-grava" id="btnGravar" 
+                        onmousedown="iniciarGravacao()" 
+                        ontouchstart="iniciarGravacao()"
+                        onmouseup="finalizarGravacao()" 
+                        ontouchend="finalizarGravacao()">🎙️</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tela de Configurações -->
+<div class="tela" id="telaConfig">
+    <div class="barra-superior">
+        <button style="background:transparent;border:none;color:white" onclick="voltar()">← Voltar</button>
+        <h3>Configurações</h3>
+        <span></span>
+    </div>
+    <div class="config">
+        <div style="text-align:center;margin-bottom:2rem">
+            <div class="foto-perfil" id="exibirFoto">👤</div>
+            <button onclick="alterarFoto()" style="width:auto">Alterar Foto de Perfil</button>
+            <input type="file" id="entradaFoto" accept="image/*" style="display:none" onchange="salvarFoto(event)">
+        </div>
+        
+        <label>Nome de Exibição:</label>
+        <input type="text" id="cfgNome">
+        <button onclick="salvarNome()" style="width:auto">Salvar Nome</button>
+        
+        <label>Número de Telefone:</label>
+        <input type="text" id="cfgNumero" disabled style="background:#eee;cursor:not-allowed">
+        <p style="color:#6b7280;font-size:.85rem;margin-bottom:1rem;">⚠️ Número não pode ser alterado</p>
+        
+        <label>Alterar Chave de Acesso:</label>
+        <input type="password" id="chaveNova" placeholder="Nova chave">
+        <input type="password" id="chaveNovaConfirma" placeholder="Repetir nova chave">
+        <button onclick="trocarChave()" style="width:auto">Atualizar Chave</button>
+    </div>
+</div>
+
+<!-- Tela Premium -->
+<div class="tela" id="telaPremium">
+    <div class="barra-superior">
+        <button style="background:transparent;border:none;color:white" onclick="voltar()">← Voltar</button>
+        <h3>💎 A.I Chat Premium</h3>
+        <span></span>
+    </div>
+    <div class="caixa" style="max-width:500px">
+        <h2>Desbloqueie o A.I Chat Premium</h2>
+        <p style="margin:1rem 0">Recursos exclusivos que elevam sua experiência</p>
+        
+        <div class="premium">
+            <h3>✨ Benefícios Premium</h3>
+            <ul style="text-align:left;margin:1rem 0 1rem 2rem">
+                <li>🔒 Criptografia avançada de ponta a ponta</li>
+                <li>🎨 Temas exclusivos e personalização total</li>
+                <li>📁 Envio de arquivos grandes sem limite</li>
+                <li>🎙️ Áudios sem restrição de duração</li>
+                <li>📊 Estatísticas de conversa</li>
+                <li>⚙️ Suporte prioritário A.I</li>
+                <li>🌟 Selos e emblemas exclusivos</li>
+            </ul>
+        </div>
+
+        <div id="statusPremium"></div>
+        
+        <button class="btn-sucesso" id="btnTeste" onclick="ativarTeste()">🎁 Ativar Teste Gratuito de 7 Dias</button>
+        <button id="btnAssinar" style="margin-top:1rem;display:none" onclick="assinarPremium()">💳 Assinar — R$ 29,90/mês</button>
+        <p style="font-size:.8rem;color:#6b7280;margin-top:1rem">Ao clicar em assinar, você será redirecionado para o Google Pay/Google Pagamentos para conclusão da assinatura mensal recorrente.</p>
+    </div>
+</div>
+
+<!-- Tela de Ligação -->
+<div class="barra-ligacao" id="telaLigacao">
+    <h2 id="tituloLigacao">📞 Ligando...</h2>
+    <p id="statusLigacao" style="margin:1rem 0">Aguardando atendimento</p>
+    <video id="videoLocal" autoplay muted playsinline style="width:200px;border-radius:12px;background:black"></video>
+    <video id="videoRemoto" autoplay playsinline style="width:300px;border-radius:12px;background:black;margin-top:1rem"></video>
+    <div class="acoes-ligacao">
+        <button class="btn-perigo" onclick="encerrarLigacao()">📞</button>
+        <button onclick="alternarMicrofone()">🎤</button>
+        <button onclick="alternarCamera()">📷</button>
+        <button onclick="compartilharTela()">🖥️</button>
+        <button onclick="alternarAltofalante()">🔊</button>
+    </div>
+</div>
+
+<!-- Modal Adicionar -->
+<div id="modalAdicionar" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);align-items:center;justify-content:center;z-index:500">
+    <div style="background:white;padding:2rem;border-radius:16px;max-width:400px;width:90%">
+        <h3>Adicionar Contato</h3>
+        <input type="text" id="buscarContato" placeholder="Nome ou Número">
+        <button onclick="procurarUsuario()">Buscar</button>
+        <div id="resultadoBusca" style="margin-top:1rem"></div>
+        <button style="background:#6b7280" onclick="fecharModal()">Cancelar</button>
+    </div>
+</div>
+
+<!-- Modal Grupo -->
+<div id="modalGrupo" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);align-items:center;justify-content:center;z-index:500">
+    <div style="background:white;padding:2rem;border-radius:16px;max-width:400px;width:90%">
+        <h3>Criar Grupo/Comunidade</h3>
+        <input type="text" id="nomeGrupo" placeholder="Nome do Grupo">
+        <p style="margin:.5rem 0">Selecione participantes:</p>
+        <div id="listaParaGrupo" style="max-height:200px;overflow-y:auto;border:1px solid #eee;padding:.5rem"></div>
+        <button onclick="criarGrupo()">Criar Grupo</button>
+        <button style="background:#6b7280" onclick="fecharModal()">Cancelar</button>
+    </div>
+</div>
+
+<script>
+// === BANCO DE DADOS LOCAL ===
+let usuarioAtual = null;
+let midiaLocal = null;
+let gravacaoAtiva = false;
+let mediaRecorder = null;
+let chunks = [];
+let conexaoLigacao = null;
+let streamLocal = null;
+let ehPremium = false;
+let expiraTeste = null;
+
+// Inicialização
+document.addEventListener('DOMContentLoaded', () => {
+    verificarSessao();
+    atualizarMascara();
+    verificarPremium();
+});
+
+// === TELAS ===
+function mostrarTela(id){
+    document.querySelectorAll('.tela').forEach(t => t.classList.remove('ativa'));
+    document.getElementById(id).classList.add('ativa');
+}
+function voltar(){mostrarTela('telaPrincipal')}
+function fecharModal(){
+    document.getElementById('modalAdicionar').style.display='none';
+    document.getElementById('modalGrupo').style.display='none';
 }
 
-// ======================================================
-// 💬 SISTEMA DE CHAT — Enviar e receber mensagens
-// ======================================================
-async function iniciarConversa(uidAlvo, nomeAlvo, numeroAlvo) {
-    fecharModalAdicionar();
-    chatAtivo = { uid: uidAlvo, nome: nomeAlvo, numero: numeroAlvo };
-    document.getElementById('chat-nome
+// === VALIDAÇÃO DE NÚMERO (A.I CHAT) ===
+function atualizarMascara
