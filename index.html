@@ -6,11 +6,11 @@
     <title>A.I Chat — Seu Mensageiro Exclusivo</title>
     <style>
         *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif}
-        :root{--prim:#2563eb;--sec:#1e40af;--sucesso:#10b981;--perigo:#ef4444;--fundo:#f0f4f8;--escuro:#1f2937;--claro:#fff;--cinza:#e5e7eb;--texto:#374151;--sombra:0 4px 12px rgba(0,0,0,.1)}
+        :root{--prim:#2563eb;--sec:#1e40af;--sucesso:#10b981;--perigo:#ef4444;--fundo:#f0f4f8;--claro:#fff;--cinza:#e5e7eb;--texto:#374151}
         body{background:var(--fundo);height:100vh;overflow:hidden}
         .tela{display:none;width:100%;height:100vh}
         .ativa{display:flex}
-        .caixa{background:var(--claro);border-radius:16px;box-shadow:var(--sombra);padding:2rem;max-width:420px;width:90%;margin:auto;text-align:center}
+        .caixa{background:var(--claro);border-radius:16px;box-shadow:0 4px 12px rgba(0,0,0,.1);padding:2rem;max-width:420px;width:90%;margin:auto;text-align:center}
         input,button,select{width:100%;padding:.85rem 1rem;margin:.5rem 0;border-radius:10px;border:1px solid var(--cinza);font-size:1rem}
         button{background:var(--prim);color:white;border:none;cursor:pointer;font-weight:600;transition:.2s}
         button:hover{background:var(--sec)}
@@ -32,54 +32,46 @@
         .btn-grava{width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem}
         .btn-grava.gravando{background:var(--perigo);animation:pulsar 1s infinite}
         @keyframes pulsar{0%{transform:scale(1)}50%{transform:scale(1.1)}100%{transform:scale(1)}}
-        .barra-ligacao{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.9);color:white;display:none;flex-direction:column;align-items:center;justify-content:center;z-index:1000}
+        .barra-ligacao{position:fixed;inset:0;background:rgba(0,0,0,.9);color:white;display:none;flex-direction:column;align-items:center;justify-content:center;z-index:1000}
         .acoes-ligacao{position:absolute;bottom:2rem;display:flex;gap:1rem}
         .acoes-ligacao button{width:60px;height:60px;border-radius:50%}
-        .config{padding:1rem}
-        .alerta{padding:.75rem;border-radius:8px;margin:1rem 0;display:none}
         .premium{background:linear-gradient(135deg,#f59e0b,#d97706);color:white;border-radius:12px;padding:1rem;margin:1rem 0}
-        .foto-perfil{width:80px;height:80px;border-radius:50%;object-fit:cover;margin-bottom:1rem;background:var(--cinza);font-size:2rem;display:flex;align-items:center;justify-content:center}
+        .foto-perfil{width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;background:var(--cinza);font-size:2rem}
         .oculto{display:none !important}
         a{color:var(--prim);text-decoration:none}
-        .item-busca{padding:.5rem;border-bottom:1px solid #eee;cursor:pointer}
+        .item-busca{padding:.75rem;border-bottom:1px solid #eee;cursor:pointer}
         .item-busca:hover{background:#f3f4f6}
     </style>
 </head>
 <body>
 
-<!-- Tela de Cadastro -->
+<!-- Tela Cadastro -->
 <div class="tela ativa" id="telaCadastro">
     <div class="caixa">
         <h1>✨ A.I Chat</h1>
         <p style="color:#6b7280;margin-bottom:2rem;">Comunicação exclusiva, segura e permanente</p>
-        
-        <label>Seu País:</label>
+        <label>País:</label>
         <select id="pais" onchange="atualizarMascara()">
             <option value="+55" selected>Brasil (+55)</option>
-            <option value="+1">Estados Unidos/Canadá (+1)</option>
+            <option value="+1">EUA/Canadá (+1)</option>
             <option value="+351">Portugal (+351)</option>
-            <option value="+44">Reino Unido (+44)</option>
         </select>
-        
         <label>Região (2 dígitos):</label>
-        <input type="text" id="ddd" maxlength="2" placeholder="Ex: 34" value="34" oninput="this.value=this.value.replace(/\D/g,'');atualizarMascara()">
-        
+        <input type="text" id="ddd" maxlength="2" placeholder="34" oninput="this.value=this.value.replace(/\D/g,'');atualizarMascara()">
         <label>Número (até 10 dígitos):</label>
-        <input type="text" id="numeroBase" maxlength="10" placeholder="Ex: 9999999999" oninput="this.value=this.value.replace(/\D/g,'');atualizarMascara()">
-        
-        <p id="mascaraNumero" style="color:#6b7280;font-size:.9rem;margin:.5rem 0;"></p>
-        <p id="analiseIA" style="color:var(--prim);font-size:.9rem;display:none;">🧠 A.I Chat analisando banco de dados...</p>
-        <p id="resultadoIA" style="font-size:.9rem;margin:.5rem 0;"></p>
-        
+        <input type="text" id="numeroBase" maxlength="10" placeholder="9999999999" oninput="this.value=this.value.replace(/\D/g,'');atualizarMascara()">
+        <p id="mascaraNumero" style="color:#6b7280;margin:.5rem 0;"></p>
+        <p id="analiseIA" style="color:var(--prim);display:none;">🧠 A.I Chat analisando...</p>
+        <p id="resultadoIA"></p>
         <button onclick="validarECadastrar()">Criar Conta</button>
         <p style="margin-top:1rem;">Já tem conta? <a href="#" onclick="mostrarTela('telaLogin');return false;">Entrar</a></p>
     </div>
 </div>
 
-<!-- Tela de Login -->
+<!-- Tela Login -->
 <div class="tela" id="telaLogin">
     <div class="caixa">
-        <h2>🔐 Entrar — A.I Chat</h2>
+        <h2>🔐 Entrar</h2>
         <input type="text" id="loginNumero" placeholder="Número de telefone">
         <input type="password" id="loginChave" placeholder="Chave de Acesso">
         <button onclick="entrar()">Entrar</button>
@@ -87,14 +79,14 @@
     </div>
 </div>
 
-<!-- Definir Nome e Chave -->
+<!-- Tela Perfil -->
 <div class="tela" id="telaPerfil">
     <div class="caixa">
         <h2>👤 Complete seu Perfil</h2>
         <p id="seuNumeroExibido" style="color:var(--prim);font-weight:bold;margin:1rem 0;"></p>
         <input type="text" id="nomeExibicao" placeholder="Nome de exibição">
-        <input type="password" id="chaveAcesso" placeholder="Criar Chave de Acesso (guarde bem!)">
-        <input type="password" id="chaveConfirma" placeholder="Repetir Chave de Acesso">
+        <input type="password" id="chaveAcesso" placeholder="Criar Chave de Acesso">
+        <input type="password" id="chaveConfirma" placeholder="Repetir chave">
         <button onclick="salvarPerfil()">Salvar e Entrar</button>
     </div>
 </div>
@@ -102,27 +94,25 @@
 <!-- Tela Principal -->
 <div class="tela" id="telaPrincipal">
     <div class="barra-superior">
-        <h3 id="tituloPagina">Conversas</h3>
+        <h3>Conversas</h3>
         <div>
-            <button style="width:auto;padding:.5rem 1rem;background:transparent;border:1px solid white;margin:0 .25rem" onclick="abrirConfig()">⚙️</button>
-            <button style="width:auto;padding:.5rem 1rem;background:transparent;border:1px solid white;margin:0 .25rem" onclick="abrirPremium()">💎 Premium</button>
-            <button style="width:auto;padding:.5rem 1rem;background:transparent;border:1px solid white;margin:0 .25rem" onclick="sair()">🚪</button>
+            <button style="width:auto;padding:.5rem;border:1px solid white;background:transparent;margin:0 .25rem" onclick="abrirConfig()">⚙️</button>
+            <button style="width:auto;padding:.5rem;border:1px solid white;background:transparent;margin:0 .25rem" onclick="abrirPremium()">💎</button>
+            <button style="width:auto;padding:.5rem;border:1px solid white;background:transparent;margin:0 .25rem" onclick="sair()">🚪</button>
         </div>
     </div>
     <div class="conteudo">
         <div class="lado-esq">
             <div style="padding:1rem">
-                <input type="text" id="buscar" placeholder="Buscar por nome ou número..." oninput="filtrarContatos()">
-                <button style="margin-top:.5rem" onclick="abrirAdicionar()">➕ Adicionar Pessoa</button>
-                <button onclick="abrirGrupo()" style="background:var(--sucesso)">👥 Criar Grupo/Comunidade</button>
+                <input type="text" id="buscar" placeholder="Buscar..." oninput="filtrarContatos()">
+                <button style="margin-top:.5rem" onclick="abrirAdicionar()">➕ Adicionar</button>
+                <button onclick="abrirGrupo()" style="background:var(--sucesso)">👥 Criar Grupo</button>
             </div>
             <div id="listaContatos"></div>
         </div>
-        <div class="lado-dir" id="areaConversa">
-            <div style="padding:2rem;text-align:center;color:#6b7280" id="seletorConversa">
-                ← Selecione uma conversa ou adicione alguém para começar
-            </div>
-            <div class="oculto" id="conversaAtiva">
+        <div class="lado-dir">
+            <div id="seletorConversa" style="padding:3rem;text-align:center;color:#6b7280;">← Selecione uma conversa</div>
+            <div id="conversaAtiva" class="oculto">
                 <div style="padding:.75rem;border-bottom:1px solid var(--cinza);display:flex;justify-content:space-between;align-items:center">
                     <span id="nomeConversaAtiva"></span>
                     <div>
@@ -132,84 +122,73 @@
                 </div>
                 <div class="area-msgs" id="caixaMensagens"></div>
                 <div class="caixa-envio">
-                    <input type="text" id="textoMensagem" placeholder="Digite sua mensagem..." onkeypress="if(event.key==='Enter'){enviarTexto();return false;}">
+                    <input type="text" id="textoMensagem" placeholder="Digite..." onkeypress="if(event.key==='Enter'){enviarTexto();return false;}">
                     <button onclick="enviarTexto()" style="width:auto;padding:.75rem">➤</button>
                     <button class="btn-grava" id="btnGravar" 
-                        onmousedown="iniciarGravacao()" 
-                        ontouchstart="iniciarGravacao()"
-                        onmouseup="finalizarGravacao()" 
-                        ontouchend="finalizarGravacao()">🎙️</button>
+                        onmousedown="iniciarGravacao()" ontouchstart="iniciarGravacao()"
+                        onmouseup="finalizarGravacao()" ontouchend="finalizarGravacao()">🎙️</button>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Tela de Configurações -->
+<!-- Configurações -->
 <div class="tela" id="telaConfig">
     <div class="barra-superior">
         <button style="background:transparent;border:none;color:white" onclick="voltar()">← Voltar</button>
         <h3>Configurações</h3>
         <span></span>
     </div>
-    <div class="config">
+    <div style="padding:1rem;max-width:500px;margin:0 auto">
         <div style="text-align:center;margin-bottom:2rem">
             <div class="foto-perfil" id="exibirFoto">👤</div>
-            <button onclick="document.getElementById('entradaFoto').click()" style="width:auto">Alterar Foto de Perfil</button>
+            <button onclick="document.getElementById('entradaFoto').click()" style="width:auto">Alterar Foto</button>
             <input type="file" id="entradaFoto" accept="image/*" style="display:none" onchange="salvarFoto(event)">
         </div>
-        
         <label>Nome de Exibição:</label>
         <input type="text" id="cfgNome">
         <button onclick="salvarNome()" style="width:auto">Salvar Nome</button>
-        
-        <label>Número de Telefone:</label>
-        <input type="text" id="cfgNumero" disabled style="background:#eee;cursor:not-allowed">
-        <p style="color:#6b7280;font-size:.85rem;margin-bottom:1rem;">⚠️ Número não pode ser alterado</p>
-        
-        <label>Alterar Chave de Acesso:</label>
+        <label>Número:</label>
+        <input type="text" id="cfgNumero" disabled style="background:#eee;">
+        <p style="color:#6b7280;font-size:.85rem;">⚠️ Não pode ser alterado</p>
+        <label>Nova Chave de Acesso:</label>
         <input type="password" id="chaveNova" placeholder="Nova chave">
-        <input type="password" id="chaveNovaConfirma" placeholder="Repetir nova chave">
+        <input type="password" id="chaveNovaConfirma" placeholder="Repetir">
         <button onclick="trocarChave()" style="width:auto">Atualizar Chave</button>
     </div>
 </div>
 
-<!-- Tela Premium -->
+<!-- Premium -->
 <div class="tela" id="telaPremium">
     <div class="barra-superior">
         <button style="background:transparent;border:none;color:white" onclick="voltar()">← Voltar</button>
-        <h3>💎 A.I Chat Premium</h3>
+        <h3>💎 Premium</h3>
         <span></span>
     </div>
     <div class="caixa" style="max-width:500px">
-        <h2>Desbloqueie o A.I Chat Premium</h2>
-        <p style="margin:1rem 0">Recursos exclusivos que elevam sua experiência</p>
-        
+        <h2>A.I Chat Premium</h2>
+        <p style="margin:1rem 0">Recursos exclusivos</p>
         <div class="premium">
-            <h3>✨ Benefícios Premium</h3>
-            <ul style="text-align:left;margin:1rem 0 1rem 2rem">
-                <li>🔒 Criptografia avançada de ponta a ponta</li>
-                <li>🎨 Temas exclusivos e personalização total</li>
-                <li>📁 Envio de arquivos grandes sem limite</li>
-                <li>🎙️ Áudios sem restrição de duração</li>
-                <li>📊 Estatísticas de conversa</li>
-                <li>⚙️ Suporte prioritário A.I</li>
-                <li>🌟 Selos e emblemas exclusivos</li>
+            <ul style="margin:1rem 0 1rem 2rem;text-align:left">
+                <li>🔒 Criptografia avançada</li>
+                <li>🎨 Temas exclusivos</li>
+                <li>📁 Arquivos sem limite</li>
+                <li>🎙️ Áudios sem duração limite</li>
+                <li>📊 Estatísticas</li>
+                <li>🌟 Selo Premium</li>
             </ul>
         </div>
-
         <div id="statusPremium"></div>
-        
-        <button class="btn-sucesso" id="btnTeste" onclick="ativarTeste()">🎁 Ativar Teste Gratuito de 7 Dias</button>
-        <button id="btnAssinar" style="margin-top:1rem;display:none" onclick="assinarPremium()">💳 Assinar — R$ 29,90/mês</button>
-        <p style="font-size:.8rem;color:#6b7280;margin-top:1rem">Ao clicar em assinar, você será redirecionado para o Google Pagamentos.</p>
+        <button class="btn-sucesso" id="btnTeste" onclick="ativarTeste()">🎁 Teste 7 Dias Grátis</button>
+        <button id="btnAssinar" style="margin-top:1rem;display:none" onclick="assinarPremium()">💳 Assinar R$29,90/mês</button>
     </div>
 </div>
 
-<!-- Tela de Ligação -->
+<!-- Ligação -->
 <div class="barra-ligacao" id="telaLigacao">
     <h2 id="tituloLigacao">📞 Ligando...</h2>
-    <p id="statusLigacao" style="margin:1rem 0">Aguardando atendimento</p>
+    <p id="statusLigacao" style="margin:1rem 0">Aguardando...</p>
     <video id="videoLocal" autoplay muted playsinline style="width:200px;border-radius:12px;background:black"></video>
     <video id="videoRemoto" autoplay playsinline style="width:300px;border-radius:12px;background:black;margin-top:1rem"></video>
     <div class="acoes-ligacao">
@@ -222,7 +201,7 @@
 </div>
 
 <!-- Modal Adicionar -->
-<div id="modalAdicionar" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);align-items:center;justify-content:center;z-index:500">
+<div id="modalAdicionar" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);align-items:center;justify-content:center;z-index:500">
     <div style="background:white;padding:2rem;border-radius:16px;max-width:400px;width:90%">
         <h3>Adicionar Contato</h3>
         <input type="text" id="buscarContato" placeholder="Nome ou Número">
@@ -233,34 +212,21 @@
 </div>
 
 <!-- Modal Grupo -->
-<div id="modalGrupo" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);align-items:center;justify-content:center;z-index:500">
+<div id="modalGrupo" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);align-items:center;justify-content:center;z-index:500">
     <div style="background:white;padding:2rem;border-radius:16px;max-width:400px;width:90%">
-        <h3>Criar Grupo/Comunidade</h3>
+        <h3>Criar Grupo</h3>
         <input type="text" id="nomeGrupo" placeholder="Nome do Grupo">
-        <p style="margin:.5rem 0">Selecione participantes:</p>
-        <div id="listaParaGrupo" style="max-height:200px;overflow-y:auto;border:1px solid #eee;padding:.5rem"></div>
-        <button onclick="criarGrupo()">Criar Grupo</button>
+        <div id="listaParaGrupo" style="max-height:200px;overflow-y:auto;border:1px solid #eee;padding:.5rem;margin:1rem 0;"></div>
+        <button onclick="criarGrupo()">Criar</button>
         <button style="background:#6b7280" onclick="fecharModal()">Cancelar</button>
     </div>
 </div>
 
 <script>
-// === BANCO DE DADOS LOCAL ===
-let usuarioAtual = null;
-let contatos = [];
-let conversas = {};
-let grupos = [];
-let conversaAtiva = null;
-let gravacaoAtiva = false;
-let mediaRecorder = null;
-let chunks = [];
-let streamLocal = null;
-let ehPremium = false;
-let expiraTeste = null;
-let micAtivo = true;
-let camAtiva = true;
+let usuarioAtual=null, contatos=[], conversas={}, grupos=[], conversaAtiva=null;
+let gravacaoAtiva=false, mediaRecorder=null, chunks=[], streamLocal=null;
+let ehPremium=false, expiraTeste=null, micAtivo=true, camAtiva=true;
 
-// Salvar/carregar dados
 function salvarDados(){
     localStorage.setItem('aiChat_usuario', JSON.stringify(usuarioAtual));
     localStorage.setItem('aiChat_contatos', JSON.stringify(contatos));
@@ -269,4 +235,25 @@ function salvarDados(){
     localStorage.setItem('aiChat_premium', JSON.stringify({premium:ehPremium,expira:expiraTeste}));
 }
 function carregarDados(){
-    const u=localStorage.getItem('ai
+    const u=localStorage.getItem('aiChat_usuario'); if(u)usuarioAtual=JSON.parse(u);
+    const c=localStorage.getItem('aiChat_contatos'); if(c)contatos=JSON.parse(c);
+    const cv=localStorage.getItem('aiChat_conversas'); if(cv)conversas=JSON.parse(cv);
+    const g=localStorage.getItem('aiChat_grupos'); if(g)grupos=JSON.parse(g);
+    const p=localStorage.getItem('aiChat_premium'); 
+    if(p){const d=JSON.parse(p);ehPremium=d.premium;expiraTeste=d.expira;}
+}
+function mostrarTela(id){document.querySelectorAll('.tela').forEach(t=>t.classList.remove('ativa'));document.getElementById(id).classList.add('ativa');}
+function voltar(){mostrarTela('telaPrincipal');carregarTelaPrincipal();}
+function fecharModal(){document.getElementById('modalAdicionar').style.display='none';document.getElementById('modalGrupo').style.display='none';}
+
+function atualizarMascara(){
+    const pais=document.getElementById('pais').value;
+    const ddd=document.getElementById('ddd').value||'34';
+    const num=document.getElementById('numeroBase').value;
+    document.getElementById('mascaraNumero').textContent=`Seu número: ${pais} ${ddd} ${num||'...'}`;
+}
+
+function numeroExiste(numero){
+    const todos=[];
+    const u=localStorage.getItem('aiChat_usuario'); if(u&&JSON.parse(u).numero===numero)return true;
+    for(let i=0;i<localStorage.length;i++){
