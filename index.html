@@ -36,12 +36,13 @@
         .acoes-ligacao{position:absolute;bottom:2rem;display:flex;gap:1rem}
         .acoes-ligacao button{width:60px;height:60px;border-radius:50%}
         .config{padding:1rem}
-        .aba{padding:.75rem 1rem;cursor:pointer;border-bottom:3px solid transparent}
-        .aba.ativa{border-bottom-color:var(--prim);color:var(--prim);font-weight:bold}
         .alerta{padding:.75rem;border-radius:8px;margin:1rem 0;display:none}
         .premium{background:linear-gradient(135deg,#f59e0b,#d97706);color:white;border-radius:12px;padding:1rem;margin:1rem 0}
         .foto-perfil{width:80px;height:80px;border-radius:50%;object-fit:cover;margin-bottom:1rem;background:var(--cinza);font-size:2rem;display:flex;align-items:center;justify-content:center}
         .oculto{display:none !important}
+        a{color:var(--prim);text-decoration:none}
+        .item-busca{padding:.5rem;border-bottom:1px solid #eee;cursor:pointer}
+        .item-busca:hover{background:#f3f4f6}
     </style>
 </head>
 <body>
@@ -54,24 +55,24 @@
         
         <label>Seu País:</label>
         <select id="pais" onchange="atualizarMascara()">
-            <option value="+55">Brasil (+55)</option>
+            <option value="+55" selected>Brasil (+55)</option>
             <option value="+1">Estados Unidos/Canadá (+1)</option>
             <option value="+351">Portugal (+351)</option>
             <option value="+44">Reino Unido (+44)</option>
         </select>
         
         <label>Região (2 dígitos):</label>
-        <input type="text" id="ddd" maxlength="2" placeholder="Ex: 34" oninput="this.value=this.value.replace(/\D/g,'')">
+        <input type="text" id="ddd" maxlength="2" placeholder="Ex: 34" value="34" oninput="this.value=this.value.replace(/\D/g,'');atualizarMascara()">
         
-        <label>Número (até 10 dígitos, sem WhatsApp):</label>
-        <input type="text" id="numeroBase" maxlength="10" placeholder="Ex: 9999999999" oninput="this.value=this.value.replace(/\D/g,'')">
+        <label>Número (até 10 dígitos):</label>
+        <input type="text" id="numeroBase" maxlength="10" placeholder="Ex: 9999999999" oninput="this.value=this.value.replace(/\D/g,'');atualizarMascara()">
         
         <p id="mascaraNumero" style="color:#6b7280;font-size:.9rem;margin:.5rem 0;"></p>
         <p id="analiseIA" style="color:var(--prim);font-size:.9rem;display:none;">🧠 A.I Chat analisando banco de dados...</p>
         <p id="resultadoIA" style="font-size:.9rem;margin:.5rem 0;"></p>
         
         <button onclick="validarECadastrar()">Criar Conta</button>
-        <p style="margin-top:1rem;">Já tem conta? <a href="#" onclick="mostrarTela('telaLogin')" style="color:var(--prim)">Entrar</a></p>
+        <p style="margin-top:1rem;">Já tem conta? <a href="#" onclick="mostrarTela('telaLogin');return false;">Entrar</a></p>
     </div>
 </div>
 
@@ -82,7 +83,7 @@
         <input type="text" id="loginNumero" placeholder="Número de telefone">
         <input type="password" id="loginChave" placeholder="Chave de Acesso">
         <button onclick="entrar()">Entrar</button>
-        <p style="margin-top:1rem;">Não tem conta? <a href="#" onclick="mostrarTela('telaCadastro')" style="color:var(--prim)">Criar conta</a></p>
+        <p style="margin-top:1rem;">Não tem conta? <a href="#" onclick="mostrarTela('telaCadastro');return false;">Criar conta</a></p>
     </div>
 </div>
 
@@ -131,7 +132,7 @@
                 </div>
                 <div class="area-msgs" id="caixaMensagens"></div>
                 <div class="caixa-envio">
-                    <input type="text" id="textoMensagem" placeholder="Digite sua mensagem..." onkeypress="if(event.key==='Enter')enviarTexto()">
+                    <input type="text" id="textoMensagem" placeholder="Digite sua mensagem..." onkeypress="if(event.key==='Enter'){enviarTexto();return false;}">
                     <button onclick="enviarTexto()" style="width:auto;padding:.75rem">➤</button>
                     <button class="btn-grava" id="btnGravar" 
                         onmousedown="iniciarGravacao()" 
@@ -154,7 +155,7 @@
     <div class="config">
         <div style="text-align:center;margin-bottom:2rem">
             <div class="foto-perfil" id="exibirFoto">👤</div>
-            <button onclick="alterarFoto()" style="width:auto">Alterar Foto de Perfil</button>
+            <button onclick="document.getElementById('entradaFoto').click()" style="width:auto">Alterar Foto de Perfil</button>
             <input type="file" id="entradaFoto" accept="image/*" style="display:none" onchange="salvarFoto(event)">
         </div>
         
@@ -201,7 +202,7 @@
         
         <button class="btn-sucesso" id="btnTeste" onclick="ativarTeste()">🎁 Ativar Teste Gratuito de 7 Dias</button>
         <button id="btnAssinar" style="margin-top:1rem;display:none" onclick="assinarPremium()">💳 Assinar — R$ 29,90/mês</button>
-        <p style="font-size:.8rem;color:#6b7280;margin-top:1rem">Ao clicar em assinar, você será redirecionado para o Google Pay/Google Pagamentos para conclusão da assinatura mensal recorrente.</p>
+        <p style="font-size:.8rem;color:#6b7280;margin-top:1rem">Ao clicar em assinar, você será redirecionado para o Google Pagamentos.</p>
     </div>
 </div>
 
@@ -213,8 +214,8 @@
     <video id="videoRemoto" autoplay playsinline style="width:300px;border-radius:12px;background:black;margin-top:1rem"></video>
     <div class="acoes-ligacao">
         <button class="btn-perigo" onclick="encerrarLigacao()">📞</button>
-        <button onclick="alternarMicrofone()">🎤</button>
-        <button onclick="alternarCamera()">📷</button>
+        <button id="btnMic" onclick="alternarMicrofone()">🎤</button>
+        <button id="btnCam" onclick="alternarCamera()">📷</button>
         <button onclick="compartilharTela()">🖥️</button>
         <button onclick="alternarAltofalante()">🔊</button>
     </div>
@@ -246,32 +247,26 @@
 <script>
 // === BANCO DE DADOS LOCAL ===
 let usuarioAtual = null;
-let midiaLocal = null;
+let contatos = [];
+let conversas = {};
+let grupos = [];
+let conversaAtiva = null;
 let gravacaoAtiva = false;
 let mediaRecorder = null;
 let chunks = [];
-let conexaoLigacao = null;
 let streamLocal = null;
 let ehPremium = false;
 let expiraTeste = null;
+let micAtivo = true;
+let camAtiva = true;
 
-// Inicialização
-document.addEventListener('DOMContentLoaded', () => {
-    verificarSessao();
-    atualizarMascara();
-    verificarPremium();
-});
-
-// === TELAS ===
-function mostrarTela(id){
-    document.querySelectorAll('.tela').forEach(t => t.classList.remove('ativa'));
-    document.getElementById(id).classList.add('ativa');
+// Salvar/carregar dados
+function salvarDados(){
+    localStorage.setItem('aiChat_usuario', JSON.stringify(usuarioAtual));
+    localStorage.setItem('aiChat_contatos', JSON.stringify(contatos));
+    localStorage.setItem('aiChat_conversas', JSON.stringify(conversas));
+    localStorage.setItem('aiChat_grupos', JSON.stringify(grupos));
+    localStorage.setItem('aiChat_premium', JSON.stringify({premium:ehPremium,expira:expiraTeste}));
 }
-function voltar(){mostrarTela('telaPrincipal')}
-function fecharModal(){
-    document.getElementById('modalAdicionar').style.display='none';
-    document.getElementById('modalGrupo').style.display='none';
-}
-
-// === VALIDAÇÃO DE NÚMERO (A.I CHAT) ===
-function atualizarMascara
+function carregarDados(){
+    const u=localStorage.getItem('ai
